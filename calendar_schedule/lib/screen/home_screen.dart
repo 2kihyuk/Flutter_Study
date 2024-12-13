@@ -60,13 +60,44 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          showModalBottomSheet(
+        onPressed: ()async {
+         final schedule =  await showModalBottomSheet<Schedule>(
             context: context,
             builder: (_) {
-              return ScheduleBottomSheet();
+              return ScheduleBottomSheet(
+                selectedDay:selectedDay
+              );
             },
           );
+         if(schedule == null){
+           return;
+         }
+
+         final dateExists = schedules.containsKey(schedule.date);
+
+         final List<Schedule> existingSchdules = dateExists ? schedules[schedule.date]! : [];
+
+         ///[Schedule1 , Schedule2]
+         ///[Schedule2]
+         existingSchdules.add(schedule);
+
+         setState(() {
+           schedules = {
+             ...schedules,
+             schedule.date : existingSchdules,
+           };
+         });
+
+         // setState(() {
+         //   schedules = {
+         //     ...schedules,
+         //     schedule.date: [
+         //       if(schedules.containsKey(schedule.date))
+         //         ...schedules[schedule.date]!,
+         //       schedule,
+         //     ]
+         //   };
+         // });
         },
         backgroundColor: primaryColor,
         child: Icon(
