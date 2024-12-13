@@ -6,8 +6,12 @@ import 'package:flutter/material.dart';
 class CustomTextField extends StatelessWidget {
   final String label;
   final bool expand;
+  final FormFieldSetter<String> onSaved;
+  final FormFieldValidator<String> validator;
 
   const CustomTextField({
+    required this.validator,
+    required this.onSaved,
     required this.label,
     this.expand = false,
     super.key,
@@ -42,6 +46,8 @@ class CustomTextField extends StatelessWidget {
         filled: true,
         fillColor: Colors.grey[300],
       ),
+      onSaved: onSaved,  //저장했을때
+      validator: validator, //검증할때 로직
       maxLines: expand? null :1,
       minLines:  expand? null : 1,
       expands: expand,

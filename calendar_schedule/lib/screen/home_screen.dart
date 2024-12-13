@@ -93,7 +93,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: ListView.separated(
                   itemCount: schedules.containsKey(selectedDay)
                       ? schedules[selectedDay]!.length : 0,
-                  //itemBuilder는 몇개의 데이터를 넣어줄거냐? itemCOunt속성
+                  //itemBuilder는 몇개의 데이터를 넣어줄냐? itemCOunt속성
                   itemBuilder: (BuildContext context, int index) { //index는 순서
 
                     //선택된 날짜에 해당되는 일정 리스트로 저장
