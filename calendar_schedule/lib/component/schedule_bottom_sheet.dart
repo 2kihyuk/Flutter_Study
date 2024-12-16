@@ -1,7 +1,9 @@
+import 'package:calendar_schedule/database/drift.dart';
+import 'package:drift/drift.dart' hide Column;
 import 'package:flutter/material.dart';
 import 'package:calendar_schedule/const/color.dart';
 import 'package:calendar_schedule/component/custom_text_field.dart';
-
+import 'package:get_it/get_it.dart';
 import '../model/schedule.dart';
 
 class ScheduleBottomSheet extends StatefulWidget {
@@ -78,16 +80,16 @@ class _ScheduleBottomSheetState extends State<ScheduleBottomSheet> {
   }
 
   String? onStartTimeValidate(String? val) {
-    if(val == null){
+    if (val == null) {
       return '값을 입력해주세요';
     }
-    if(int.tryParse(val) == null){
+    if (int.tryParse(val) == null) {
       return '숫자를 입력해주세요';
     }
 
     final time = int.parse(val);
 
-    if(time > 24 || time <0 ){
+    if (time > 24 || time < 0) {
       return '0과 24 사이의 숫자를 입력해주세요';
     }
   }
@@ -100,15 +102,15 @@ class _ScheduleBottomSheetState extends State<ScheduleBottomSheet> {
   }
 
   String? onEndTimeValidate(String? val) {
-    if(val == null){
+    if (val == null) {
       return '값을 입력해주세요';
     }
-    if(int.tryParse(val) == null){
+    if (int.tryParse(val) == null) {
       return '숫자를 입력해주세요';
     }
     final time = int.parse(val);
 
-    if(time > 24 || time <0 ){
+    if (time > 24 || time < 0) {
       return '0과 24 사이의 숫자를 입력해주세요';
     }
   }
@@ -121,42 +123,46 @@ class _ScheduleBottomSheetState extends State<ScheduleBottomSheet> {
   }
 
   String? onContentValidate(String? val) {
-    if(val == null){
+    if (val == null) {
       return '내용을 입력해주세요';
     }
-    if(val.length < 5){
+    if (val.length < 5) {
       return '5자 이상을 입력해주세요';
     }
 
     return null;
   }
 
-  void onSavePressed(){
+  void onSavePressed() async{
     final isValid = formKey.currentState!.validate();
 
-    if(isValid){
+    if (isValid) {
       formKey.currentState!.save();
-      print('---------------');
-      print(startTime);
-      print(endTime);
-      print(content);
 
-      final schedule = Schedule(
-        id : 999,
-        startTime : startTime!,
-        endTime : endTime!,
-        content : content!,
-        color : selectedColor,
-        date : widget.selectedDay,
-        createdAt : DateTime.now().toUtc(),
+      final database = GetIt.I<AppDatabase>();
+
+      await database.createSchedule(
+        ScheduleTableCompanion(
+          startTime: Value(startTime!),
+          endTime: Value(endTime!),
+          content: Value(content!),
+          color: Value(selectedColor!),
+          date: Value(widget.selectedDay),
+        ),
       );
 
-      Navigator.of(context).pop(
-        schedule,
-      );
+      // final schedule = ScheduleTable(
+      //   id : 999,
+      //   startTime : startTime!,
+      //   endTime : endTime!,
+      //   content : content!,
+      //   color : selectedColor,
+      //   date : widget.selectedDay,
+      //   createdAt : DateTime.now().toUtc(),
+      // );
+
+      Navigator.of(context).pop();
     }
-
-
   }
 }
 
@@ -249,33 +255,34 @@ class _Categories extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
         children: categoryColors
-            .map((e) => Padding(
-                  padding: EdgeInsets.only(right: 8.0),
-                  child: GestureDetector(
-                    onTap: () {
-                      onTap(e);
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Color(
-                          int.parse(
-                            'FF$e',
-                            radix: 16,
-                          ),
-                        ),
-                        border: e == selectedColor
-                            ? Border.all(
-                                color: Colors.black,
-                                width: 4.0,
-                              )
-                            : null,
-                        shape: BoxShape.circle,
+            .map((e) =>
+            Padding(
+              padding: EdgeInsets.only(right: 8.0),
+              child: GestureDetector(
+                onTap: () {
+                  onTap(e);
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Color(
+                      int.parse(
+                        'FF$e',
+                        radix: 16,
                       ),
-                      width: 32.0,
-                      height: 32.0,
                     ),
+                    border: e == selectedColor
+                        ? Border.all(
+                      color: Colors.black,
+                      width: 4.0,
+                    )
+                        : null,
+                    shape: BoxShape.circle,
                   ),
-                ))
+                  width: 32.0,
+                  height: 32.0,
+                ),
+              ),
+            ))
             .toList());
   }
 }
