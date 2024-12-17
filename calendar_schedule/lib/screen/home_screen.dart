@@ -63,7 +63,7 @@ class _HomeScreenState extends State<HomeScreen> {
               return ScheduleBottomSheet(selectedDay: selectedDay);
             },
           );
-          
+
           setState(() {
 
           });
