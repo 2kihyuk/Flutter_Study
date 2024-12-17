@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+
 class EndSpend extends StatelessWidget {
   const EndSpend({super.key});
 
@@ -32,8 +33,9 @@ class EndSpend extends StatelessWidget {
               Text(
                 '오늘 지출을 마감하세요',
                 style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w400,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  fontFamily: 'Pretendard'
                 ),
               ),
             ],
@@ -44,6 +46,7 @@ class EndSpend extends StatelessWidget {
                 '지출 마감하기',
                 style: TextStyle(
                   fontWeight: FontWeight.w700,
+                  fontFamily: 'Pretendard',
                   fontSize: 18,
                   color: Colors.black,
                 ),
