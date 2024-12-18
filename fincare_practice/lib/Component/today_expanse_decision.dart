@@ -1,3 +1,4 @@
+import 'package:fincare_practice/screen/decision_expanse.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -74,10 +75,7 @@ class _TodayExpanseDecisionState extends State<TodayExpanseDecision> {
                   ///페이지 이동
                   Navigator.of(context).push(
                     MaterialPageRoute(builder: (BuildContext context) {
-                      return Container(
-                        
-                        child: Center(child: Text('Center')),
-                      );
+                      return DecisionExpanse();
                     }),
                   );
                 },
