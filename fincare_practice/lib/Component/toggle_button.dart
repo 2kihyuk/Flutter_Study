@@ -1,26 +1,24 @@
 import 'package:flutter/material.dart';
 
-class ToggleButton extends StatefulWidget {
-  const ToggleButton({super.key});
+class ToggleButton extends StatelessWidget {
+  final int selectedIndex;
+  final Function(int) onSelectionChanged;
 
-  @override
-  State<ToggleButton> createState() => _ToggleButtonState();
-}
-
-class _ToggleButtonState extends State<ToggleButton> {
-  int selectedIndex = 0;
+  const ToggleButton({
+    required this.selectedIndex,
+    required this.onSelectionChanged,
+    super.key
+  });
 
   @override
   Widget build(BuildContext context) {
-
 
     return ToggleButtons(
       isSelected: [selectedIndex == 0, selectedIndex == 1],
       // 선택 상태 표시
       onPressed: (index) {
-        setState(() {
-          selectedIndex = index; // 버튼 클릭 시 선택된 인덱스 업데이트
-        });
+
+        onSelectionChanged(index); // 부모 위젯으로 선택된 값 전달
       },
       children: [
         Padding(

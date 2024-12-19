@@ -17,9 +17,9 @@ class BudgetMain extends StatelessWidget {
 
             Safebox(),
             EndSpend(),
-            Savebutton(content: '저장하기',),
+            // Savebutton(content: '저장하기',),
             SizedBox(height: 16.0,),
-            Savebutton(content: '이메일로 시작하기'),
+            // Savebutton(content: '이메일로 시작하기'),
             TodayExpanseDecision(),
 
           ],

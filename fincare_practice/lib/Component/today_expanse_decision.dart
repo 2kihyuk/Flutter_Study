@@ -10,15 +10,34 @@ class TodayExpanseDecision extends StatefulWidget {
 }
 
 class _TodayExpanseDecisionState extends State<TodayExpanseDecision> {
-  final int todayExpanse = 10000;
+  double MonthExpanse = 600000;
+  double dailyBudget = 0;  // 하루 예산을 실시간으로 업데이트
+  String labelText = "";
   TextEditingController _controller = TextEditingController();
+  int selectedExpanseIndex = 0; // 0: 수입, 1: 지출
+
+  @override
+  void initState() {
+    super.initState();
+    _updateLabelText();
+  }
+
+  // 하루 예산 계산
+  void _updateLabelText() {
+    DateTime now = DateTime.now();
+    DateTime firstDayOfMonth = DateTime(now.year, now.month, 1);
+    DateTime lastDayOfMonth = DateTime(now.year, now.month + 1, 0);
+    int daysInMonth = lastDayOfMonth.day;
+
+    dailyBudget = MonthExpanse / daysInMonth;
+
+    labelText = "하루 예산은 ${dailyBudget.toStringAsFixed(0)}원";
+  }
 
   @override
   Widget build(BuildContext context) {
     DateTime now = DateTime.now();
     String formattedDate = DateFormat('d일 EEEE', 'ko_KR').format(now);
-
-    ///한국어로 변환
 
     return Container(
       padding: EdgeInsets.all(20),
@@ -49,10 +68,12 @@ class _TodayExpanseDecisionState extends State<TodayExpanseDecision> {
           ),
           SizedBox(height: 10),
 
+          // 금액 입력 필드
           TextField(
             controller: _controller,
             decoration: InputDecoration(
-              labelText: '금액을 입력해주세요',
+              labelText: labelText,
+              floatingLabelBehavior: FloatingLabelBehavior.auto,
               labelStyle: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w500,
@@ -65,20 +86,13 @@ class _TodayExpanseDecisionState extends State<TodayExpanseDecision> {
                 ),
               ),
               contentPadding:
-                  EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+              EdgeInsets.symmetric(vertical: 10, horizontal: 10),
               suffixIcon: IconButton(
                 icon: Icon(
                   Icons.add,
                   color: Colors.blue,
                 ),
-                onPressed: () {
-                  ///페이지 이동
-                  Navigator.of(context).push(
-                    MaterialPageRoute(builder: (BuildContext context) {
-                      return DecisionExpanse();
-                    }),
-                  );
-                },
+                onPressed: onTapSave,
               ),
             ),
             style: TextStyle(
@@ -91,4 +105,38 @@ class _TodayExpanseDecisionState extends State<TodayExpanseDecision> {
       ),
     );
   }
+
+  void onTapSave() async {
+    String amount = _controller.text;
+
+    // 페이지 이동 및 데이터를 받음
+    final updatedAmount = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => DecisionExpanse(
+          initialAmount: amount,
+        ),
+      ),
+    );
+
+    if (updatedAmount != null) {
+      setState(() {
+        // updatedAmount에서 숫자 부분만 추출하여 계산
+        double amountValue = double.tryParse(updatedAmount.replaceAll(RegExp(r'[^0-9.]'), '')) ?? 0;
+
+        // 수입/지출에 따른 계산
+        if (updatedAmount.startsWith("+")) {
+          dailyBudget += amountValue; // 수입이면 더하기
+        } else if (updatedAmount.startsWith("-")) {
+          dailyBudget -= amountValue; // 지출이면 빼기
+        }
+        labelText = "하루 예산은 ${dailyBudget.toStringAsFixed(0)}원";
+        // 하루 예산 갱신
+        // _updateLabelText();
+      });
+    }
+  }
+
+
+
 }

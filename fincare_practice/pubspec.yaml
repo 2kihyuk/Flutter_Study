@@ -63,13 +63,16 @@ flutter:
   fonts:
     - family: Pretendard
       fonts:
-        - asset: asset/font/Pretendard-regular.otf
-        - asset: asset/font/Pretendard-SemiBold.otf
+        - asset: assets/font/Pretendard-regular.otf
+        - asset: assets/font/Pretendard-SemiBold.otf
           weight: 300
-        - asset: asset/font/Pretendard-Bold.otf
+        - asset: assets/font/Pretendard-Bold.otf
           weight: 500
-        - asset: asset/font/Pretendard-ExtraBold.otf
+        - asset: assets/font/Pretendard-ExtraBold.otf
           weight: 700
+
+  assets:
+    - assets/images/
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 

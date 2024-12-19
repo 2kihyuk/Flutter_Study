@@ -16,12 +16,21 @@ class AuthenticationStart extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center, // 위아래 중앙 배치
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Text('지출 계엄령 ,FinCare'),
-                SizedBox(height: 20.0),
+                Text(
+                  '지출 계엄령, 계산은 여자가',
+                  style: TextStyle(
+                    fontSize: 20.0,
+                    fontFamily: 'Pretendard',
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                SizedBox(height: 10.0),
                 Text(
                   'FINCARE',
                   style: TextStyle(
                     fontSize: 60,
+                    fontFamily: 'Pretendard',
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
               ],
@@ -31,10 +40,22 @@ class AuthenticationStart extends StatelessWidget {
           // 화면 하단에 버튼을 배치
           Padding(
             padding: const EdgeInsets.all(20.0),
-            child: Savebutton(content: '회원가입하기'),
+            child: Savebutton(
+              content: '시작하기',
+              onSave: onStartButtonPressed,
+            ),
+
           ),
+          // Expanded(
+          //   child:
+          //   Image.asset(name),
+          // ),
         ],
       ),
     );
+  }
+
+  void onStartButtonPressed(){
+
   }
 }
