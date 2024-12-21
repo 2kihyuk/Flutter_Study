@@ -15,10 +15,9 @@ class BudgetMain extends StatelessWidget {
       body: SafeArea(
         child: Column(
           children: [
-            // Savebutton(content: '저장하기',),
+
             BudgetMainTopSlider(),
             SizedBox(height: 16.0,),
-            // Savebutton(content: '이메일로 시작하기'),
             TodayExpanseDecision(),
             SizedBox(height: 16.0,),
             EndSpend(),

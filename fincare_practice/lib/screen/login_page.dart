@@ -1,4 +1,5 @@
 import 'package:fincare_practice/screen/home_screen.dart';
+import 'package:fincare_practice/screen/month_expanse_check.dart';
 import 'package:flutter/material.dart';
 
 class LoginPage extends StatefulWidget {
@@ -20,7 +21,8 @@ class _LoginPageState extends State<LoginPage> {
 
     Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder:(context)=>
-            HomeScreen()
+            MonthExpanseCheck()
+            // HomeScreen()
         )
     );
     // 로그인 처리 로직을 여기에 추가
