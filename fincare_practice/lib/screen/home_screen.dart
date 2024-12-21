@@ -1,3 +1,4 @@
+import 'package:fincare_practice/Component/this_week_emotion.dart';
 import 'package:fincare_practice/screen/authentication_start.dart';
 import 'package:fincare_practice/screen/budget_main.dart';
 import 'package:fincare_practice/screen/calendar_Setting.dart';
@@ -23,6 +24,7 @@ class _HomeScreenState extends State<HomeScreen> {
     CalendarSetting(),
     NotificationSetting(),
     AuthenticationStart(),
+
     // LoginPage(),
   ];
 

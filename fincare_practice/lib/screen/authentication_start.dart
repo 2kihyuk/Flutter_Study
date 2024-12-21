@@ -1,9 +1,15 @@
 import 'package:fincare_practice/Component/savebutton.dart';
+import 'package:fincare_practice/screen/login_page.dart';
 import 'package:flutter/material.dart';
 
-class AuthenticationStart extends StatelessWidget {
+class AuthenticationStart extends StatefulWidget {
   const AuthenticationStart({super.key});
 
+  @override
+  State<AuthenticationStart> createState() => _AuthenticationStartState();
+}
+
+class _AuthenticationStartState extends State<AuthenticationStart> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -56,6 +62,12 @@ class AuthenticationStart extends StatelessWidget {
   }
 
   void onStartButtonPressed(){
-
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(
+        builder: (context) => (
+          LoginPage()
+        ),
+      ),
+    );
   }
 }

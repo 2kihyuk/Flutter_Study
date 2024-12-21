@@ -1,4 +1,6 @@
+import 'package:fincare_practice/screen/authentication_start.dart';
 import 'package:fincare_practice/screen/home_screen.dart';
+import 'package:fincare_practice/screen/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';  // intl 패키지
 import 'package:intl/date_symbol_data_local.dart';
@@ -11,7 +13,7 @@ void main() async{
 
   runApp(
     MaterialApp(
-      home:HomeScreen(),
+      home:AuthenticationStart(),
     )
   );
 }
