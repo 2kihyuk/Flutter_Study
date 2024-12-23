@@ -142,18 +142,20 @@ class _MonthExpanseCheckState extends State<MonthExpanseCheck> {
   TextEditingController _budgetController = TextEditingController(); // 예산 입력을 위한 텍스트 컨트롤러
 
   // 숫자에 천 단위 구분 기호 추가하는 함수
-  String formatCurrency(String value) {
-    if (value.isEmpty) {
-      return '0';
-    }
-
-    final number = int.tryParse(value.replaceAll(',', ''));
-    if (number == null) {
-      return '0';
-    }
-
+  String formatCurrency(double value) {
+    // if (value.isEmpty) {
+    //   return '0';
+    // }
+    //
+    // final number = int.tryParse(value.replaceAll(',', ''));
+    // if (number == null) {
+    //   return '0';
+    // }
+    //
+    // final formatter = NumberFormat('#,###');
+    // return formatter.format(number);
     final formatter = NumberFormat('#,###');
-    return formatter.format(number);
+    return formatter.format(value); // 숫자를 천 단위 구분 기호로 포맷팅
   }
 
   @override
@@ -208,11 +210,19 @@ class _MonthExpanseCheckState extends State<MonthExpanseCheck> {
                       ),
                       onChanged: (value) {
                         setState(() {
-                          String formattedValue = formatCurrency(value); // 숫자 포맷팅
+                          // double formattedValue = formatCurrency(value); // 숫자 포맷팅
+                          // _budgetController.text = formattedValue; // 포맷된 값을 다시 텍스트 필드에 설정
+                          // _budgetController.selection = TextSelection.fromPosition(TextPosition(offset: formattedValue.length)); // 커서 위치 조정
+                          // // 예산 값을 BudgetModel에 저장
+                          // Provider.of<BudgetModel>(context, listen: false).budget = formattedValue;
+                          double inputValue = double.tryParse(value.replaceAll(',', '')) ?? 0;
+                          String formattedValue = formatCurrency(inputValue); // 숫자 포맷팅
+
                           _budgetController.text = formattedValue; // 포맷된 값을 다시 텍스트 필드에 설정
                           _budgetController.selection = TextSelection.fromPosition(TextPosition(offset: formattedValue.length)); // 커서 위치 조정
+
                           // 예산 값을 BudgetModel에 저장
-                          Provider.of<BudgetModel>(context, listen: false).budget = formattedValue;
+                          Provider.of<BudgetModel>(context, listen: false).budget = inputValue;
                         });
                       },
                     ),

@@ -23,13 +23,13 @@ class _TodayExpanseDecisionState extends State<TodayExpanseDecision> {
 
   void _updateLabelText() {
     // BudgetModel을 사용하여 예산 값과 하루 예산을 가져옵니다.
-    String budget = Provider.of<BudgetModel>(context, listen: false).budget;
+    double budget = Provider.of<BudgetModel>(context, listen: false).budget;
     double dailyBudget =
         Provider.of<BudgetModel>(context, listen: false).dailyBudget;
-
+    String formattedDailyBudget = NumberFormat('#,###').format(dailyBudget);
     setState(() {
-      labelText =
-          "하루 예산은 ${dailyBudget.toStringAsFixed(0)}원"; // labelText에 하루 예산을 설정
+      labelText = "하루 예산은 ${formattedDailyBudget}원";
+          // "하루 예산은 ${dailyBudget.toStringAsFixed(0)}원"; // labelText에 하루 예산을 설정
     });
   }
 
@@ -150,8 +150,8 @@ class _TodayExpanseDecisionState extends State<TodayExpanseDecision> {
         }
 
         // 계산된 예산 값을 문자열로 다시 변환하여 Provider에 반영
-        Provider.of<BudgetModel>(context, listen: false).dailyBudget =
-            currentBudget;
+        Provider.of<BudgetModel>(context, listen:false ).setDailyBudget(currentBudget);
+
 
         // 하루 예산 갱신
         _updateLabelText(); // labelText를 갱신합니다.

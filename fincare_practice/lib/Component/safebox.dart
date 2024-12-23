@@ -1,4 +1,7 @@
+import 'package:fincare_practice/model/budgetmodel.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class Safebox extends StatelessWidget {
   const Safebox({super.key});
@@ -38,13 +41,17 @@ class Safebox extends StatelessWidget {
               ),
             ],
           ),
-          Text(
-            '70,000원',
-            style: TextStyle(
-              fontWeight: FontWeight.w700,
-              fontSize: 18,
-              color: Colors.black,
-            ),
+          Consumer<BudgetModel>(
+            builder: (context,budgetModel,child){
+              return Text(
+                '${NumberFormat('#,###').format(budgetModel.safeboxBudget)}원',
+                style: TextStyle(
+                  fontWeight: FontWeight.w700,
+                  fontSize: 18,
+                  color: Colors.black,
+                ),
+              );
+            },
           ),
         ],
       ),

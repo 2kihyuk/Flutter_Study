@@ -177,6 +177,9 @@ import 'package:fincare_practice/Component/toggle_button.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
+
+import '../model/budgetmodel.dart';
 
 class DecisionExpanse extends StatefulWidget {
 
@@ -311,6 +314,11 @@ class _DecisionExpanseState extends State<DecisionExpanse> {
               } else {
                 updatedAmount = "-$updatedAmount";
               }
+
+              double amountValue = double.parse(updatedAmount.replaceAll(RegExp(r'[^0-9.]'), ''));
+
+              Provider.of<BudgetModel>(context, listen: false)
+                  .addTransaction(amountValue, categoryItemString, selectedExpanseIndex == 0 ? "income" : "expense");
 
               // 데이터를 보내기
               Navigator.pop(context, updatedAmount);
