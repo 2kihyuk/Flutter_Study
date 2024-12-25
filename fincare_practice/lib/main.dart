@@ -53,8 +53,11 @@ void main() async {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => BudgetModel(), // BudgetModel을 Provider로 감쌈
+    return MultiProvider(
+      providers: [
+        Provider<BudgetModel>(create: (context) => BudgetModel()),
+      ],
+       // BudgetModel을 Provider로 감쌈
       child: MaterialApp(
         home: AuthenticationStart(),
       ),

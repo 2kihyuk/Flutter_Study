@@ -1,5 +1,7 @@
+import 'package:fincare_practice/model/budgetmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class ThisWeekEmotion extends StatelessWidget {
   const ThisWeekEmotion({super.key});
@@ -43,6 +45,7 @@ class ThisWeekEmotion extends StatelessWidget {
             children: List.generate(7, (index) {
               String formattedDate = DateFormat('d').format(daysOfWeek[index]);
               String dayOfWeek = dayNames[index]; // 월, 화, 수, ...
+
               Icon icon =
                   Icon(Icons.sentiment_very_dissatisfied, color: Colors.red);
 
@@ -54,7 +57,21 @@ class ThisWeekEmotion extends StatelessWidget {
                   SizedBox(height: 10.0),
                   Text(formattedDate,
                   style: TextStyle(fontFamily: 'Pretendard',),), // 날짜 표시
-                  SizedBox(height: 20.0),
+                  SizedBox(height: 15.0),
+
+                  // Consumer<BudgetModel>(
+                  //   builder: (context,budgetModel,child){
+                  //     double todayLeftSpend = budgetModel.getTodayLeftSpend();
+                  //
+                  //     // 숫자 포맷팅 (천 단위 구분)
+                  //     String formattedTodayLeftSpend = NumberFormat('#,###').format(todayLeftSpend.floor());
+                  //
+                  //     return Text(
+                  //        '${formattedTodayLeftSpend}'
+                  //     );
+                  //   },
+                  // ),
+
                   icon, // 상태 아이콘 표시
                 ],
               );

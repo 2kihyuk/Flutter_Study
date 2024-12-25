@@ -171,15 +171,15 @@
 
 
 /// ------------------------------------------------------------------------------------------------------------------------------------------------------
-import 'package:fincare_practice/Component/category_modal.dart';
+import 'package:fincare_practice/Component/Budget_main_component/category_modal.dart';
 import 'package:fincare_practice/Component/savebutton.dart';
-import 'package:fincare_practice/Component/toggle_button.dart';
+import 'package:fincare_practice/Component/Budget_main_component/toggle_button.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
-import '../model/budgetmodel.dart';
+import '../../model/budgetmodel.dart';
 
 class DecisionExpanse extends StatefulWidget {
 
@@ -194,6 +194,7 @@ class DecisionExpanse extends StatefulWidget {
 }
 
 class _DecisionExpanseState extends State<DecisionExpanse> {
+
   String categoryItemString = "선택된 카테고리 없음";
   TextEditingController _controller = TextEditingController();
   int selectedExpanseIndex = 0; // 0: 수입, 1: 지출
@@ -224,7 +225,7 @@ class _DecisionExpanseState extends State<DecisionExpanse> {
             ),
           ),
           Text(
-            'D-15 / 300000원',
+            'D-15 / 300000원',  //여기에 남은 일수와 전체예산에서 현재날짜까지 지출한 금액을 뺸 값.
             style: TextStyle(
               fontFamily: 'Pretendard',
               fontWeight: FontWeight.w500,
