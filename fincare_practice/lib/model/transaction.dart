@@ -6,9 +6,10 @@ class Transaction {
   final String type; //수입 인지 지출인지
   final DateTime date; //날짜
 
-  Transaction(
-      {required this.amount,
+  Transaction({
+        required this.amount,
         required this.category,
         required this.type,
-        required this.date});
+        required this.date
+  });
 }

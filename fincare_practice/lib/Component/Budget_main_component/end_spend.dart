@@ -1,9 +1,15 @@
+import 'package:fincare_practice/screen/end_spend_screen.dart';
 import 'package:flutter/material.dart';
 
 
-class EndSpend extends StatelessWidget {
+class EndSpend extends StatefulWidget {
   const EndSpend({super.key});
 
+  @override
+  State<EndSpend> createState() => _EndSpendState();
+}
+
+class _EndSpendState extends State<EndSpend> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -45,20 +51,28 @@ class EndSpend extends StatelessWidget {
               Text(
                 '지출 마감하기',
                 style: TextStyle(
-                  fontWeight: FontWeight.w700,
+                    fontWeight: FontWeight.w700,
                   fontFamily: 'Pretendard',
                   fontSize: 18,
                   color: Colors.black,
                 ),
               ),
               IconButton(
-                onPressed: (){},
+                onPressed: onEndButtonPressed,
                 icon: Icon(Icons.arrow_right_alt),
               )
             ],
           )
         ],
       ),
+    );
+  }
+
+  void onEndButtonPressed(){
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (BuildContext context){
+        return EndSpendScreen();
+      })
     );
   }
 }

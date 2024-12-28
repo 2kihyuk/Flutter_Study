@@ -393,9 +393,11 @@ class BudgetModel with ChangeNotifier {
   DateTime get lastResetDate => _lastResetDate;
   Map<String, List<Transaction>> get transactions => _transactions;
 
+  ///MonthExpanseCheck.dart에서 한달 총 예산인 budget값을 세팅하면, 하루 예산을 계산하여 dailyBudget(하루 총 예산)에도 값을 세팅해줌.
   set budget(double value) {
     _budget = value;
     // _calculateDailyBudget(); // 예산 값이 변경되면 하루 예산을 재계산
+    _calculateDailyBudget();
     notifyListeners();
   }
 
@@ -408,7 +410,7 @@ class BudgetModel with ChangeNotifier {
   // 하루 예산을 계산하는 함수
   void _calculateDailyBudget() {
     DateTime now = DateTime.now();
-    DateTime firstDayOfMonth = DateTime(now.year, now.month, 1);
+    // DateTime firstDayOfMonth = DateTime(now.year, now.month, 1);
     DateTime lastDayOfMonth = DateTime(now.year, now.month + 1, 0);
     int daysInMonth = lastDayOfMonth.day;
 
@@ -485,6 +487,7 @@ class BudgetModel with ChangeNotifier {
       _totalSpend += amount; // 총 지출에 반영
     }
 
+
     _updateDailySpendStatus(); // 하루 지출 상태 업데이트
     _printTransactions(); // 트랜잭션 출력
     notifyListeners();
@@ -497,7 +500,9 @@ class BudgetModel with ChangeNotifier {
     _transactions.forEach((date, transactionsList) {
       for (var transaction in transactionsList) {
         print("Date: $date - Category: ${transaction.category}, Amount: ${transaction.amount}, Type: ${transaction.type}, Date: ${transaction.date}");
+
       }
+      print("dailySpend : ${dailySpend} , totalSpend : ${totalSpend} , dailyPlus:${dailyPlus} , dailySpendLeft : ${dailySpendLeft} , dailySpendOver : ${dailySpendOver}");
     });
   }
 

@@ -153,6 +153,7 @@ class _TodayExpanseDecisionState extends State<TodayExpanseDecision> {
         Provider.of<BudgetModel>(context, listen:false ).setDailyBudget(currentBudget);
 
 
+
         // 하루 예산 갱신
         _updateLabelText(); // labelText를 갱신합니다.
       });
