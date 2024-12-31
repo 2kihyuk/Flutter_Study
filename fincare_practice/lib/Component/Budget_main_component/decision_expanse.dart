@@ -321,7 +321,7 @@ class _DecisionExpanseState extends State<DecisionExpanse> {
               Provider.of<BudgetModel>(context, listen: false)
                   .addTransaction(amountValue, categoryItemString, selectedExpanseIndex == 0 ? "income" : "expense");
               ///여기서 트랜잭션 데이터를 추가할때, sharedPreference와 백엔드/서버에 저장해야, 캘린더에서 해당 데이터를 가져와서 캘린더 날짜별로 반영이 가능함.
-              // 데이터를 보내기
+
               Navigator.pop(context, updatedAmount);
             },
             child: Text(

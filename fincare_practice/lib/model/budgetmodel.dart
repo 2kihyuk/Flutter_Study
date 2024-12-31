@@ -93,6 +93,7 @@
 import 'dart:convert';
 
 import 'package:fincare_practice/model/transaction.dart';
+import 'package:hive/hive.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 ///---------------------------------------------------------------------------------------------------------------------------------------
@@ -370,6 +371,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class BudgetModel with ChangeNotifier {
   double _budget = 0.0; // 월 예산
   double _dailyBudget = 0; // 하루 예산
+  double _dailyBudget_copy =0;
   double _dailySpend = 0; // 하루 지출
   double _dailySpendLeft = 0; // 하루 예산에서 지출한 금액을 뺀 남은 금액
   double _dailySpendOver = 0; // 초과 지출 금액 (음수)
@@ -384,6 +386,7 @@ class BudgetModel with ChangeNotifier {
 
   double get budget => _budget;
   double get dailyBudget => _dailyBudget;
+  double get dailyBudgetCopy => _dailyBudget_copy;
   double get dailySpend => _dailySpend;
   double get dailySpendLeft => _dailySpendLeft;
   double get dailySpendOver => _dailySpendOver;
@@ -403,6 +406,7 @@ class BudgetModel with ChangeNotifier {
 
     void setDailyBudget(double value) {
     _dailyBudget = value;
+
     // 이 곳에서 notifyListeners()를 호출하여 상태 변경을 알림
     notifyListeners();
   }
@@ -415,6 +419,7 @@ class BudgetModel with ChangeNotifier {
     int daysInMonth = lastDayOfMonth.day;
 
     _dailyBudget = _budget / daysInMonth; // 하루 예산 계산
+    _dailyBudget_copy = _budget / daysInMonth;
     _dailySpendLeft = _dailyBudget; // 처음에는 예산이 남아있음
     _dailySpendOver = 0; // 처음에는 초과 지출 없음
     _safeboxBudget = 0; // 처음에는 아낀 금액 없음
@@ -492,7 +497,8 @@ class BudgetModel with ChangeNotifier {
     _printTransactions(); // 트랜잭션 출력
     notifyListeners();
 
-    // _saveTransactionsToPrefs(); // 트랜잭션을 SharedPreferences에 저장
+    saveTransactionDataInHive(newTransaction);
+
   }
 
   // 트랜잭션 출력 (디버깅용)
@@ -503,21 +509,38 @@ class BudgetModel with ChangeNotifier {
 
       }
       print("dailySpend : ${dailySpend} , totalSpend : ${totalSpend} , dailyPlus:${dailyPlus} , dailySpendLeft : ${dailySpendLeft} , dailySpendOver : ${dailySpendOver}");
+      print("dailyBudgetCopy : $dailyBudgetCopy");
     });
   }
 
-  // SharedPreferences에 트랜잭션 저장
-  // Future<void> _saveTransactionsToPrefs() async {
-  //   final prefs = await SharedPreferences.getInstance();
-  //   String transactionsJson = jsonEncode(_transactions.map((key, value) {
-  //     return MapEntry(key, value.map((e) => {
-  //       'amount': e.amount,
-  //       'category': e.category,
-  //       'type': e.type,
-  //       'date': e.date.toIso8601String(),
-  //     }).toList());
-  //   }));
-  //
-  //   await prefs.setString('transactions', transactionsJson);
-  // }
+  //맵 구조 - <날짜시간 , [가격,카테고리,타입,날짜]>
+
+  ///하이브 내부저장소에 트랜잭션 데이터를 추가함. key- 현재 날짜 (yyyy-MM-dd)형식.
+  Future<void> saveTransactionDataInHive(Transaction transaction) async{
+    var box = await Hive.openBox('transactionBox');
+    String todayKey = DateTime.now().toIso8601String().split('T').first;
+
+    var transactionData = {
+      'amount': transaction.amount,
+      'category': transaction.category,
+      'type': transaction.type,
+      'date': transaction.date.toIso8601String(),
+    };
+
+    // 오늘 날짜에 해당하는 트랜잭션 리스트 가져오기 (없으면 빈 리스트 반환)
+    List<dynamic> transactionsForToday = box.get(todayKey, defaultValue: []);
+
+    // 트랜잭션 리스트에 새로운 트랜잭션 추가
+    transactionsForToday.add(transactionData);
+
+    // 오늘 날짜에 해당하는 트랜잭션 리스트 다시 Hive에 저장
+    await box.put(todayKey, transactionsForToday);
+
+    print(transactionsForToday);
+
+  }
+
+
+
+
 }
