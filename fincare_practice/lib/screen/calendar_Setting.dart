@@ -3,6 +3,7 @@ import 'package:fincare_practice/Component/Table_Setting_component/today_budget_
 import 'package:fincare_practice/const/color.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:fincare_practice/model/category_data.dart';
 
 class CalendarSetting extends StatefulWidget {
   const CalendarSetting({super.key});
@@ -33,17 +34,48 @@ class _CalendarSettingState extends State<CalendarSetting> {
           taskCount: 0,
         ),
         Expanded(
-            child: ListView(
+            child: ListView( //ListView.builder로 수정해주면 되는데, 조건은 날짜를 통해서 렌더링해주면됨. 백엔드나 내부 저장소에 날짜별로 트랜잭션 데이터 넣어 두었으니까 , builder사용할때
+              //그날짜에 해당하는 데이터들만 가지고와서 리스트뷰에 렌더링.
+              padding: EdgeInsets.all(16.0),
               children: [
                 Container(
+                  padding: EdgeInsets.all(16.0),
+                  margin: EdgeInsets.symmetric(vertical: 8.0),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: Colors.grey),
+                  ),
                   child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('시간'), // 여기다가 날짜 시간넣고
-                      Text('내용'), // 금액은 얼마이고 수입인지 지출인지
-                      Text('색상'), // 카테고리및 아이콘 넣고
+                      // 시간
+                      Text(
+                        '${DateTime.now().month}월 ${DateTime.now().day}일 ${DateTime.now().hour}시',
+                        style: TextStyle(fontFamily: 'Pretendard',fontWeight: FontWeight.bold),
+                      ),
+                      // 내용 (금액과 수입/지출)
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Text(
+                            '₩ 10,000',
+                            style: TextStyle(fontFamily: 'Pretendard',fontWeight: FontWeight.bold),
+                          ),
+                          Text('수입'),
+                        ],
+                      ),
+                      // 카테고리 및 아이콘
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Icon(Icons.shopping_cart, color: Colors.blue),
+                          Text('쇼핑'),
+                        ],
+                      ),
                     ],
                   ),
-                )
+                ),
               ],
             ),
         ),
