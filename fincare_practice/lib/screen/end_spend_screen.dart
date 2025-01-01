@@ -61,7 +61,18 @@ class EndSpendScreen extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(left: 24.0),
             child: Text(
-              '오늘 하루 총 지출액 ${NumberFormat('#,###').format(Provider.of<BudgetModel>(context, listen: false).dailyPlus.toInt() -
+              '오늘 하루 총 지출액 ${NumberFormat('#,###').format((Provider.of<BudgetModel>(context, listen: false).dailyPlus.toInt() -
+                  Provider.of<BudgetModel>(context,listen: false).dailySpend.toInt()))}원',
+              style: TextStyle(
+                  fontFamily: 'Pretendard',
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.w700),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 24.0),
+            child: Text(
+              '오늘 하루 잔여 예산 ${NumberFormat('#,###').format(Provider.of<BudgetModel>(context , listen: false).dailyBudget + Provider.of<BudgetModel>(context, listen: false).dailyPlus.toInt() -
                   Provider.of<BudgetModel>(context,listen: false).dailySpend.toInt())}원',
               style: TextStyle(
                   fontFamily: 'Pretendard',

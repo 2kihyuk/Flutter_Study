@@ -34,14 +34,7 @@ class Custombottomnavigationbar extends StatelessWidget {
           icon: Icon(Icons.notifications),
           label: 'Notifications',
         ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.account_circle),
-          label: '설정',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.account_circle),
-          label: '로그인세팅',
-        ),
+        
       ],
     );
   }

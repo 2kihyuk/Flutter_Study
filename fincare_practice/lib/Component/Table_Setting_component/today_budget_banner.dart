@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 
 class TodayBudgetBanner extends StatelessWidget {
   final DateTime selectedDay;
-  final int taskCount;
 
-  const TodayBudgetBanner({required this.selectedDay, required this.taskCount, super.key});
+
+  const TodayBudgetBanner({required this.selectedDay,  super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -24,12 +24,7 @@ class TodayBudgetBanner extends StatelessWidget {
                 color: Colors.white,
               ),
             ),
-            Text(
-              '지출 및 수입 내역 ${taskCount}개',
-              style: TextStyle(
-                color: Colors.white,
-              ),
-            ),
+
           ],
         ),
       ),
