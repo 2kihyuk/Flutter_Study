@@ -1,27 +1,53 @@
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:lv2_actual/common/const/colors.dart';
+import 'package:lv2_actual/common/const/data.dart';
 import 'package:lv2_actual/common/layout/default_layout.dart';
+import 'package:lv2_actual/common/view/root_tab.dart';
 
 import '../../common/component/custom_text_form_field.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
   @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  String userName = '';
+  String password = '';
+
+  @override
   Widget build(BuildContext context) {
+
+
+
+    final dio = Dio();
+
+
+
+
+
     return DefaultLayout(
         child: SingleChildScrollView(
-          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-          child: SafeArea(
-                top: true,
-                bottom: false,
-                child: Padding(
+      keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+      child: SafeArea(
+        top: true,
+        bottom: false,
+        child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               _Title(),
-              SizedBox(height: 16.0,),
+              SizedBox(
+                height: 16.0,
+              ),
               _SubTitle(),
               Image.asset(
                 'asset/img/misc/logo.png',
@@ -30,33 +56,80 @@ class LoginScreen extends StatelessWidget {
               CustomTextFormField(
                 hintText: '이메일을 입력해주세요.',
                 // errorText: '에러가 있습니다.',
-                onChanged: (String value) {},
+                onChanged: (String value) {
+                  userName = value;
+                },
               ),
-              SizedBox(height: 16.0,),
+              SizedBox(
+                height: 16.0,
+              ),
               CustomTextFormField(
                 hintText: '비밀번호를 입력해주세요.',
                 // errorText: '에러가 있습니다.',
                 obscureText: true,
-                onChanged: (String value) {},
+                onChanged: (String value) {
+                  password = value;
+                },
               ),
-              SizedBox(height: 16.0,),
+              SizedBox(
+                height: 16.0,
+              ),
               ElevatedButton(
-                onPressed: () {},
+                onPressed: () async {
+                  final rawString = '$userName:$password';
+                  print(rawString);
+
+                  Codec<String, String> stringToBase64 = utf8.fuse(base64);
+                  String token = stringToBase64.encode(rawString);
+
+                  final resp = await dio.post(
+                    'http://$ip/auth/login',
+                    options: Options(
+                      headers: {
+                        'Authorization': 'Basic $token',
+                      },
+                    ),
+                  );
+
+                  final refreshToken = resp.data['refreshToken'];
+                  final accessToken = resp.data['accessToken'];
+                  
+                  await storage.write(key: REFRESH_TOKEN_KEY, value: refreshToken);
+                  await storage.write(key: ACCESS_TOKEN_KEY, value: accessToken);
+
+
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) => RootTab(),
+                    ),
+                  );
+                },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: PRIMARY_COLOR,
                 ),
-                child: Text('로그인',style: TextStyle(color: Colors.white,),),
+                child: Text(
+                  '로그인',
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
+                ),
               ),
               TextButton(
-                onPressed: (){},
-          
-                child: Text('회원가입',style: TextStyle(color: Colors.black,),),
+                onPressed: () async {
+
+                },
+                child: Text(
+                  '회원가입',
+                  style: TextStyle(
+                    color: Colors.black,
+                  ),
+                ),
               )
             ],
           ),
-                ),
-              ),
-        ));
+        ),
+      ),
+    ));
   }
 }
 
