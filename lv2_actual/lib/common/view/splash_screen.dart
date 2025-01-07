@@ -40,6 +40,9 @@ class _SplashScreenState extends State<SplashScreen> {
           },
         ),
       );
+
+      await storage.write(key: ACCESS_TOKEN_KEY, value: resp.data['accessToken']);
+
       Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(builder: (_) => RootTab()),
             (route) => false,
@@ -54,7 +57,7 @@ class _SplashScreenState extends State<SplashScreen> {
     ///유효기간이 지났다면,,,,
     ///서비스마다 회사마다 처리 방식이 다르지만, 가장 평범한 방법인 로그아웃을 시키는 방식으로 진행하기.
     ///다시 로그인 하면 토큰을 재발급할수있기때문에, 로그아웃을 시키는 방법을 사용.
-    
+
   }
 
   @override

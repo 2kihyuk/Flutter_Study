@@ -369,6 +369,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 class BudgetModel with ChangeNotifier {
+
   double _budget = 0.0; // 월 예산
   double _dailyBudget = 0; // 하루 예산
   double _dailyBudget_copy =0;

@@ -141,19 +141,11 @@ class MonthExpanseCheck extends StatefulWidget {
 class _MonthExpanseCheckState extends State<MonthExpanseCheck> {
   TextEditingController _budgetController = TextEditingController(); // 예산 입력을 위한 텍스트 컨트롤러
 
+  TextEditingController _expanseController = TextEditingController();
+
   // 숫자에 천 단위 구분 기호 추가하는 함수
   String formatCurrency(double value) {
-    // if (value.isEmpty) {
-    //   return '0';
-    // }
-    //
-    // final number = int.tryParse(value.replaceAll(',', ''));
-    // if (number == null) {
-    //   return '0';
-    // }
-    //
-    // final formatter = NumberFormat('#,###');
-    // return formatter.format(number);
+
     final formatter = NumberFormat('#,###');
     return formatter.format(value); // 숫자를 천 단위 구분 기호로 포맷팅
   }
@@ -210,11 +202,7 @@ class _MonthExpanseCheckState extends State<MonthExpanseCheck> {
                       ),
                       onChanged: (value) {
                         setState(() {
-                          // double formattedValue = formatCurrency(value); // 숫자 포맷팅
-                          // _budgetController.text = formattedValue; // 포맷된 값을 다시 텍스트 필드에 설정
-                          // _budgetController.selection = TextSelection.fromPosition(TextPosition(offset: formattedValue.length)); // 커서 위치 조정
-                          // // 예산 값을 BudgetModel에 저장
-                          // Provider.of<BudgetModel>(context, listen: false).budget = formattedValue;
+
                           double inputValue = double.tryParse(value.replaceAll(',', '')) ?? 0;
                           String formattedValue = formatCurrency(inputValue); // 숫자 포맷팅
 
@@ -227,8 +215,50 @@ class _MonthExpanseCheckState extends State<MonthExpanseCheck> {
                       },
                     ),
                   ),
+
                 ],
               ),
+
+
+              Row(
+                children: [
+                  Text(
+                    '고정 지출',
+                    style: TextStyle(
+                      fontFamily: 'Pretendard',
+                      fontSize: 16,
+                    ),
+                  ),
+                  SizedBox(width: 24),
+                  Expanded(
+                    child: TextField(
+                      controller: _expanseController,
+                      keyboardType: TextInputType.number,
+                      textAlign: TextAlign.right, // 텍스트를 오른쪽 정렬
+                      decoration: InputDecoration(
+                        hintText: '예산을 입력하세요',
+                        border: UnderlineInputBorder(),
+                        suffixText: '원', // "원" 텍스트 추가
+                      ),
+                      onChanged: (value) {
+                        setState(() {
+
+                          double inputValue = double.tryParse(value.replaceAll(',', '')) ?? 0;
+                          String formattedValue = formatCurrency(inputValue); // 숫자 포맷팅
+
+                          _expanseController.text = formattedValue; // 포맷된 값을 다시 텍스트 필드에 설정
+                          _expanseController.selection = TextSelection.fromPosition(TextPosition(offset: formattedValue.length)); // 커서 위치 조정
+
+
+
+                        });
+                      },
+                    ),
+                  ),
+
+                ],
+              ),
+
               SizedBox(height: 120),
 
               // 저장 버튼
@@ -252,3 +282,4 @@ class _MonthExpanseCheckState extends State<MonthExpanseCheck> {
     );
   }
 }
+

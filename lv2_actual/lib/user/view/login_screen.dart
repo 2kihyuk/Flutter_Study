@@ -25,13 +25,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
 
-
-
     final dio = Dio();
-
-
-
-
 
     return DefaultLayout(
         child: SingleChildScrollView(
@@ -87,7 +81,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     options: Options(
                       headers: {
                         'Authorization': 'Basic $token',
+
                       },
+
                     ),
                   );
 
