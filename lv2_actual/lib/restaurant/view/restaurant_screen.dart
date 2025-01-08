@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:lv2_actual/restaurant/component/restaurant_card.dart';
 import 'package:lv2_actual/restaurant/model/restaurant_model.dart';
+import 'package:lv2_actual/restaurant/view/restaurant_detail_screen.dart';
 
 import '../../common/const/data.dart';
 
@@ -32,7 +33,7 @@ class RestaurantScreen extends StatelessWidget {
                   if (!snapshot.hasData) {
                     return Container(
                       child: Center(
-                        child: Text('No Data'),
+                        child: CircularProgressIndicator()
                       ),
                     );
                   }
@@ -43,8 +44,17 @@ class RestaurantScreen extends StatelessWidget {
                       //parsed
                       final pItem2 = RestaurantModel.fromJson(json: item);
 
-                      return RestaurantCard.fromModel(
-                        model: pItem2,
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (_) => RestaurantDetailScreen(id: pItem2.id,),
+                            ),
+                          );
+                        },
+                        child: RestaurantCard.fromModel(
+                          model: pItem2,
+                        ),
                       );
                     },
                     separatorBuilder: (_, index) {
