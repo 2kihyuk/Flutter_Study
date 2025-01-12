@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ready_project/user/view/login_screen.dart';
-
+import 'auth/view/login_screen.dart';
 import 'common/view/splash_screen.dart';
 
 void main() {
@@ -19,7 +18,7 @@ class _App extends StatelessWidget {
 
       ),
       debugShowCheckedModeBanner: false,
-      home: SplashScreen(),
+      home: LoginScreen(),
     );
   }
 }

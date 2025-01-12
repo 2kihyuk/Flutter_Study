@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:ready_project/common/const/data.dart';
 import 'package:ready_project/common/view/root_tab.dart';
-import 'package:ready_project/user/view/login_screen.dart';
 
+
+import '../../auth/view/login_screen.dart';
 import '../const/colors.dart';
 import '../layout/default_layout.dart';
 
@@ -23,7 +24,7 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    // deleteToken();
+    deleteToken();
     checkToken();
   }
 

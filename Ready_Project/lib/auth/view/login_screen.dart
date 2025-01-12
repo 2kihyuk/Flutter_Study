@@ -4,10 +4,12 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:ready_project/common/const/data.dart';
 
-import '../../common/component/custom_text_form_field.dart';
+
+import '../component/custom_text_form_field.dart';
 import '../../common/const/colors.dart';
 import '../../common/layout/default_layout.dart';
 import '../../common/view/root_tab.dart';
+import 'authentication_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -100,29 +102,10 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
               TextButton(
-                onPressed: () async {
-                  final Map<String, String> authData = {
-                    'username': userName,
-                    'password': password,
-                  };
-
-                  try {
-                    final resp = await dio.post('http://$ip/auth/register',
-                        options: Options(
-                          headers: {
-                            'Content-Type': 'application/json',
-                          },
-                        ),
-                        data: jsonEncode(authData));
-
-                    if (resp.statusCode == 200) {
-                      print('회원가입 성공!');
-
-                      ///회원가입 성공 했다는 모달 하나 띄워주기.
-                    }
-                  } catch (e) {
-                    print('로그인 오류: $e');
-                  }
+                onPressed: ()  {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(builder: (_) => AuthenticationScreen())
+                  );
                 },
                 child: Text(
                   '회원가입',
@@ -166,3 +149,28 @@ class _SubTitle extends StatelessWidget {
     );
   }
 }
+
+
+
+// final Map<String, String> authData = {
+//   'username': userName,
+//   'password': password,
+// };
+//
+// try {
+// final resp = await dio.post('http://$ip/auth/register',
+// options: Options(
+// headers: {
+// 'Content-Type': 'application/json',
+// },
+// ),
+// data: jsonEncode(authData));
+//
+// if (resp.statusCode == 200) {
+// print('회원가입 성공!');
+//
+// ///회원가입 성공 했다는 모달 하나 띄워주기.
+// }
+// } catch (e) {
+// print('로그인 오류: $e');
+// }
