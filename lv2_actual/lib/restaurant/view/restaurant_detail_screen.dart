@@ -1,8 +1,10 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:lv2_actual/common/dio/dio.dart';
 import 'package:lv2_actual/common/layout/default_layout.dart';
 import 'package:lv2_actual/product/component/product_card.dart';
 import 'package:lv2_actual/restaurant/component/restaurant_card.dart';
+import 'package:lv2_actual/restaurant/repository/restaurant_repository.dart';
 
 import '../../common/const/data.dart';
 import '../model/restaurant_detail_model.dart';
@@ -12,38 +14,59 @@ class RestaurantDetailScreen extends StatelessWidget {
 
   const RestaurantDetailScreen({required this.id, super.key});
 
-  Future<Map<String,dynamic>> getRestaurantDetail() async {
+  // Future<Map<String,dynamic>> getRestaurantDetail() async {
+  //   final dio = Dio();
+  //
+  //
+  //   final accessToken = await storage.read(key: ACCESS_TOKEN_KEY);
+  //
+  //   final resp = await dio.get('http://$ip/restaurant/$id',
+  //       options: Options(headers: {
+  //         'authorization': 'Bearer $accessToken',
+  //       }));
+  //
+  //   return resp.data;
+  // }
+
+  Future<RestaurantDetailModel> getRestaurantDetail() async{
     final dio = Dio();
+    //여기서 dio.interceptors.add()에 우리가 정의한 customInterceptor를 넣어주면서, dio요청이 딱 전송되기 전에 interceptor가 해당 요청을 가로채서
+    //요청을 보낼떄, 요청을 받을때, 에러가 발생할때의 3가지 케이스에 대한 로직을 확인한다.
 
-    final accessToken = await storage.read(key: ACCESS_TOKEN_KEY);
+    dio.interceptors.add(
+      CustomInterceptor(storage: storage),
+    );
+    final repository = RestaurantRepository(dio,baseUrl: 'http://$ip/restaurant');
 
-    final resp = await dio.get('http://$ip/restaurant/$id',
-        options: Options(headers: {
-          'authorization': 'Bearer $accessToken',
-        }));
-
-    return resp.data;
+    return repository.getRestaurantDetail(id: id);
   }
 
   @override
   Widget build(BuildContext context) {
     return DefaultLayout(
         title: '불타는 떡볶이',
-        child: FutureBuilder<Map<String,dynamic>>(
+        child: FutureBuilder<RestaurantDetailModel>(
           future: getRestaurantDetail(),
-          builder: (_,AsyncSnapshot<Map<String,dynamic>> snapshot){
+          builder: (_,AsyncSnapshot<RestaurantDetailModel> snapshot){
             print(snapshot.data);
+
+            if(snapshot.hasError){
+              return Center(
+                child: Text(snapshot.error.toString()),
+              );
+            }
+
             if(!snapshot.hasData){
               return Center(
                 child: CircularProgressIndicator(),
               );
             }
-            final item = RestaurantDetailModel.fromJson(json: snapshot.data!,);
+            // final item = RestaurantDetailModel.fromJson(snapshot.data!,);
             return CustomScrollView(
               slivers: [
-                renderTop(model: item),
+                renderTop(model: snapshot.data!),
                 renderLabel(),
-                renderProducts(products: item.products),
+                renderProducts(products: snapshot.data!.products),
               ],
             );
           },
