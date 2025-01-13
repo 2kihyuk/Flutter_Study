@@ -14,6 +14,8 @@ class _App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      locale: Locale('ko', 'KR'), // 한국어로 설정
+
       theme: ThemeData(
 
       ),

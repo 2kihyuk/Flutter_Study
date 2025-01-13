@@ -18,9 +18,9 @@ class AuthenticationScreen extends StatefulWidget {
 }
 
 class _AuthenticationScreenState extends State<AuthenticationScreen> {
-  String userId = '';
+  String username = '';
   String password = '';
-  String userName = '';
+  String name = '';
   DateTime? birthDate;
 
   Future<void> selectBirthday(BuildContext context) async {
@@ -45,7 +45,9 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
     final dio = Dio();
 
     return DefaultLayout(
+
       child: SingleChildScrollView(
+
         child: SafeArea(
           top: true,
           bottom: false,
@@ -54,6 +56,15 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
+                Align(
+                  alignment: Alignment.topLeft,
+                  child: IconButton(
+                    icon: Icon(Icons.arrow_back),
+                    onPressed: () {
+                      Navigator.pop(context); // 뒤로가기 버튼 클릭 시 이전 화면으로 돌아가기
+                    },
+                  ),
+                ),
                 // _Title(),
                 SizedBox(
                   height: 16.0,
@@ -63,7 +74,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                   hintText: '이메일을 입력해주세요.',
                   // errorText: '에러가 있습니다.',
                   onChanged: (String value) {
-                    userId = value;
+                    username = value;
                   },
                 ),
                 SizedBox(
@@ -84,7 +95,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                   hintText: '이름을 입력해주세요.',
                   // errorText: '에러가 있습니다.',
                   onChanged: (String value) {
-                    userName = value;
+                    name = value;
                   },
                 ),
                 SizedBox(
@@ -94,7 +105,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                   onTap: () => selectBirthday(context),
                   child: Container(
                     padding:
-                        EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
+                        EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
                     decoration: BoxDecoration(
                       border: Border.all(color: Colors.grey),
                       borderRadius: BorderRadius.circular(8),
@@ -137,22 +148,21 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                 ElevatedButton(
                   onPressed: () async {
 
-                    double monthTotalIncome = double.tryParse(monthTotalIncomeController.text.replaceAll(RegExp(r'[^0-9]'), '')) ?? 0.0; //한달 총 수입액
-                    double monthFixedExpanse = double.tryParse(monthFixedExpanseController.text.replaceAll(RegExp(r'[^0-9]'), '')) ?? 0.0; // 한달 고정 지출액
+                    double month_TotalIncome = double.tryParse(monthTotalIncomeController.text.replaceAll(RegExp(r'[^0-9]'), '')) ?? 0.0; //한달 총 수입액
+                    double month_FixedExpense = double.tryParse(monthFixedExpanseController.text.replaceAll(RegExp(r'[^0-9]'), '')) ?? 0.0; // 한달 고정 지출액
 
 
                     final Map<String, dynamic> loginData = {
-                      'userId': userId,
+                      'username': username,
                       'password': password,
-                      'userName': userName,
+                      'name': name,
                       'birthDate' : birthDate!.toIso8601String(),
-                      'monthTotalIncome': monthTotalIncome,
-                      'monthFixedExpanse': monthFixedExpanse,
-
+                      'month_TotalIncome': month_TotalIncome,
+                      'month_FixedExpense': month_FixedExpense,
                     };
 
                     final resp = await dio.post(
-                      'http://$ip/auth/login',
+                      'http://$ip/auth/register',
                       options: Options(headers: {
                         'Content-Type': 'application/json',
                       }),
@@ -160,13 +170,11 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                     );
 
                     if (resp.statusCode == 200) {
-                      final jwtToken = resp.data['token'];
-                      await storage.write(key: JWT_TOKEN, value: jwtToken);
 
                       Navigator.of(context).pushAndRemoveUntil(
                           MaterialPageRoute(builder: (_) => LoginScreen()),
                           (route) => false);
-                      print(jwtToken);
+
                     } else {
                       print(resp.statusCode);
                       print('로그인 실패');
@@ -176,7 +184,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                     backgroundColor: PRIMARY_COLOR,
                   ),
                   child: Text(
-                    '로그인',
+                    '회원가입',
                     style: TextStyle(
                       color: Colors.white,
                     ),

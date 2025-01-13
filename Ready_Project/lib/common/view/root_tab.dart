@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ready_project/Home/view/start_budget_management.dart';
 
 import '../const/colors.dart';
 import '../layout/default_layout.dart';
@@ -45,9 +46,9 @@ class _RootTabState extends State<RootTab> with SingleTickerProviderStateMixin {
         physics: NeverScrollableScrollPhysics(),
         controller: controller,
         children: [
-          Container(child: Text('홈')),
-          Container(child: Text('음식')),
-          Container(child: Text('주문')),
+          StartBudgetManagement(),
+          Container(child: Text('예산')),
+          Container(child: Text('AI서비스')),
           Container(child: Text('프로필')),
         ],
       ),
@@ -66,7 +67,7 @@ class _RootTabState extends State<RootTab> with SingleTickerProviderStateMixin {
           BottomNavigationBarItem(
               icon: Icon(Icons.calendar_month_outlined), label: '예산'),
           BottomNavigationBarItem(
-              icon: Icon(Icons.receipt_long_outlined), label: '주문'),
+              icon: Icon(Icons.receipt_long_outlined), label: 'AI서비스'),
           BottomNavigationBarItem(
               icon: Icon(Icons.person_outlined), label: '프로필'),
         ],

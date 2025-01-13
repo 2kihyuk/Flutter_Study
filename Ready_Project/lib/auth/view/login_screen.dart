@@ -19,7 +19,7 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  String userName = '';
+  String username = '';
   String password = '';
 
   @override
@@ -46,7 +46,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 hintText: '이메일을 입력해주세요.',
                 // errorText: '에러가 있습니다.',
                 onChanged: (String value) {
-                  userName = value;
+                  username = value;
                 },
               ),
               SizedBox(
@@ -66,7 +66,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ElevatedButton(
                 onPressed: () async {
                   final Map<String, String> loginData = {
-                    'username': userName,
+                    'username': username,
                     'password': password,
                   };
 

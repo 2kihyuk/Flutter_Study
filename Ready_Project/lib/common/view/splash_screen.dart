@@ -24,7 +24,7 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    deleteToken();
+    // deleteToken();
     checkToken();
   }
 
