@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
-import 'auth/view/login_screen.dart';
-import 'common/view/splash_screen.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:ready_project/common/view/root_tab.dart';
 
-void main() {
+
+
+
+void main()  {
+  // 한국어 로케일 초기화
+
+
   runApp(
-    _App(),
+    ProviderScope(child: _App()),
   );
 }
 
@@ -15,12 +21,10 @@ class _App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       locale: Locale('ko', 'KR'), // 한국어로 설정
-
       theme: ThemeData(
-
       ),
       debugShowCheckedModeBanner: false,
-      home: LoginScreen(),
+      home: RootTab(),
     );
   }
 }

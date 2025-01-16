@@ -1,0 +1,98 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
+import 'package:ready_project/riverpod/budget_notifier.dart';
+
+class Incomeorexpense extends ConsumerWidget {
+
+  const Incomeorexpense({super.key});
+
+  @override
+  Widget build(BuildContext context,WidgetRef ref) {
+    final budget = ref.read(budgetProvider);
+
+    TextEditingController _controller = TextEditingController();
+    // Get current date and day in Korean
+    DateTime now = DateTime.now();
+
+    // Days of the week in Korean
+    List<String> daysOfWeek = ['일', '월', '화', '수', '목', '금', '토'];
+
+    // Format the date in a custom way: 'd일 EEEE'
+    String formattedDate = '${now.day}일 ${daysOfWeek[now.weekday]}요일';
+
+    return  Container(
+      padding: EdgeInsets.all(20),
+      margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+      decoration: BoxDecoration(
+        color: Colors.blue[50],
+        borderRadius: BorderRadius.circular(10),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.1),
+            blurRadius: 5,
+            spreadRadius: 2,
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // 날짜 텍스트
+          Text(
+            formattedDate,
+            style: TextStyle(
+
+              fontWeight: FontWeight.w700,
+              fontSize: 16,
+              color: Colors.black,
+            ),
+          ),
+          SizedBox(height: 10),
+
+          // 하루 예산 텍스트
+          Text(
+            '오늘 하루 예산은 ${NumberFormat("#,###").format(budget.daily_budget)}원', // labelText를 통해 하루 예산을 보여줍니다.
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w500,
+              color: Colors.black,
+            ),
+          ),
+          SizedBox(height: 10),
+
+          // 금액 입력 필드
+          TextField(
+            controller: _controller,
+            decoration: InputDecoration(
+              hintText: "금액을 입력하세요",
+              floatingLabelBehavior: FloatingLabelBehavior.auto,
+              labelStyle: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w500,
+                color: Colors.black.withOpacity(0.6),
+              ),
+              border: UnderlineInputBorder(),
+              contentPadding:
+              EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+              suffixIcon: IconButton(
+                icon: Icon(
+                  Icons.add,
+                  color: Colors.blue,
+                ),
+                onPressed: (){
+                  //버튼 눌러서 다음 화면으로 넘어가는 로직
+                },
+              ),
+            ),
+            style: TextStyle(
+              fontSize: 18,
+
+              color: Colors.black,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

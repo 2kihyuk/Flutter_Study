@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ready_project/Home/view/start_budget_management.dart';
+import 'package:ready_project/start_budget_management/view/start_budget_management.dart';
 
 import '../const/colors.dart';
 import '../layout/default_layout.dart';
@@ -41,7 +41,7 @@ class _RootTabState extends State<RootTab> with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return DefaultLayout(
-      title: '코팩 딜리버리',
+
       child: TabBarView(
         physics: NeverScrollableScrollPhysics(),
         controller: controller,
