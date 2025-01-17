@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ready_project/common/view/root_tab.dart';
+import 'package:ready_project/common/view/splash_screen.dart';
 
 
 
@@ -24,7 +25,7 @@ class _App extends StatelessWidget {
       theme: ThemeData(
       ),
       debugShowCheckedModeBanner: false,
-      home: RootTab(),
+      home: SplashScreen(),
     );
   }
 }

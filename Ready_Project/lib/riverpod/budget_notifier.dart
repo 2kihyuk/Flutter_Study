@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../common/const/data.dart';
 import 'budget_model.dart';
 
 class BudgetNotifier extends StateNotifier<BudgetModel>{
@@ -14,7 +15,7 @@ class BudgetNotifier extends StateNotifier<BudgetModel>{
 
     try {
       final response = await dio.get(
-        'http://your_api_url/user-info',
+        'http://$ip/user-info',
         options: Options(
           headers: {
             'Authorization': 'Bearer $token',
@@ -22,6 +23,7 @@ class BudgetNotifier extends StateNotifier<BudgetModel>{
         ),
       );
       if (response.statusCode == 200) {
+        print(response.data);
         state = BudgetModel.fromJson(response.data); // 상태 업데이트
       } else {
         print('API 요청 실패');
@@ -30,16 +32,25 @@ class BudgetNotifier extends StateNotifier<BudgetModel>{
       print('에러 발생: $e');
     }
   }
+
+  // Update daily budget
+  void updateDailyBudget(double amount, bool isIncome) {
+    if (isIncome) {
+      state = BudgetModel(
+        month_budget: state.month_budget,
+        daily_budget: state.daily_budget + amount,
+      );
+    } else {
+      state = BudgetModel(
+        month_budget: state.month_budget,
+        daily_budget: state.daily_budget - amount,
+      );
+    }
+  }
 }
+
 
 final budgetProvider  = StateNotifierProvider<BudgetNotifier,BudgetModel>(
     (ref) => BudgetNotifier(),
 );
 
-//
-// setState(() {
-// month_budget = resp.data['monthBudget'] ?? 0.0;  // null이거나 없을 경우 0.0 설정
-// daily_budget = resp.data['dailyBudget'] ?? 0.0;  // null이거나 없을 경우 0.0 설정
-// birthDate = resp.data['birthDate'] ?? '생일';
-// name = resp.data['name'] ?? '이름';
-// });

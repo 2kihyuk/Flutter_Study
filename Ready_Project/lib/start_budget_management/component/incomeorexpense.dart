@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:ready_project/riverpod/budget_notifier.dart';
+import 'package:ready_project/start_budget_management/view/decision_incomeorexpense.dart';
 
 class Incomeorexpense extends ConsumerWidget {
-
   const Incomeorexpense({super.key});
 
   @override
-  Widget build(BuildContext context,WidgetRef ref) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final budget = ref.read(budgetProvider);
 
     TextEditingController _controller = TextEditingController();
@@ -21,7 +21,7 @@ class Incomeorexpense extends ConsumerWidget {
     // Format the date in a custom way: 'd일 EEEE'
     String formattedDate = '${now.day}일 ${daysOfWeek[now.weekday]}요일';
 
-    return  Container(
+    return Container(
       padding: EdgeInsets.all(20),
       margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
       decoration: BoxDecoration(
@@ -42,7 +42,6 @@ class Incomeorexpense extends ConsumerWidget {
           Text(
             formattedDate,
             style: TextStyle(
-
               fontWeight: FontWeight.w700,
               fontSize: 16,
               color: Colors.black,
@@ -52,7 +51,8 @@ class Incomeorexpense extends ConsumerWidget {
 
           // 하루 예산 텍스트
           Text(
-            '오늘 하루 예산은 ${NumberFormat("#,###").format(budget.daily_budget)}원', // labelText를 통해 하루 예산을 보여줍니다.
+            '오늘 하루 예산은 ${NumberFormat("#,###").format(budget.daily_budget)}원',
+            // labelText를 통해 하루 예산을 보여줍니다.
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w500,
@@ -63,6 +63,23 @@ class Incomeorexpense extends ConsumerWidget {
 
           // 금액 입력 필드
           TextField(
+            onChanged: (value) {
+              String withoutComma = value.replaceAll(RegExp(r','), '');
+
+              // 숫자가 있으면 파싱하고 쉼표 추가
+              if (withoutComma.isNotEmpty) {
+                double parsedValue = double.tryParse(withoutComma) ?? 0.0;
+                String formattedValue =
+                    NumberFormat('#,###').format(parsedValue);
+
+                // TextController에 다시 형식을 적용한 값을 설정
+                _controller.value = _controller.value.copyWith(
+                  text: formattedValue,
+                  selection:
+                      TextSelection.collapsed(offset: formattedValue.length),
+                );
+              }
+            },
             controller: _controller,
             decoration: InputDecoration(
               hintText: "금액을 입력하세요",
@@ -74,20 +91,40 @@ class Incomeorexpense extends ConsumerWidget {
               ),
               border: UnderlineInputBorder(),
               contentPadding:
-              EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                  EdgeInsets.symmetric(vertical: 10, horizontal: 10),
               suffixIcon: IconButton(
                 icon: Icon(
                   Icons.add,
                   color: Colors.blue,
                 ),
-                onPressed: (){
+                onPressed: () async {
+                  String amount = _controller.text;
+                  final updatedAmount = await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (_) =>
+                            DecisionIncomeorexpense(initialAmount: amount)),
+                  );
+                  if (updatedAmount != null) {
+                    double amountValue = double.tryParse(
+                            updatedAmount.replaceAll(RegExp(r'[^0-9.]'), '')) ??
+                        0;
+                    bool isIncome =
+                        updatedAmount.startsWith('+'); // 수입인지 지출인지 판별
+
+                    // `budgetProvider`를 통해 상태 업데이트
+                    ref
+                        .read(budgetProvider.notifier)
+                        .updateDailyBudget(amountValue, isIncome);
+                  }
+
+                  _controller.clear();
                   //버튼 눌러서 다음 화면으로 넘어가는 로직
                 },
               ),
             ),
             style: TextStyle(
               fontSize: 18,
-
               color: Colors.black,
             ),
           ),

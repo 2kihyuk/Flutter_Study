@@ -15,7 +15,7 @@ class ToggleButton extends StatelessWidget {
 
     return ToggleButtons(
       isSelected: [selectedIndex == 0, selectedIndex == 1],
-      // 선택 상태 표시`
+      // 선택 상태 표시
       onPressed: (index) {
 
         onSelectionChanged(index); // 부모 위젯으로 선택된 값 전달

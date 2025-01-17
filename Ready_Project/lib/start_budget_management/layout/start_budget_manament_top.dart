@@ -29,7 +29,12 @@ class StartBudgetManamentTop extends ConsumerWidget {
                 style: TextStyle(fontSize: 16, color: Colors.grey),
               ),
               TextButton(
-                onPressed: () {},
+                onPressed: () {
+                  //수정 페이지
+                  Navigator.of(context).push(
+                    MaterialPageRoute(builder: (_) => Container()),
+                  );
+                },
                 child: Text(
                   '수정',
                   style: TextStyle(

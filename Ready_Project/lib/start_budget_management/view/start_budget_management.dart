@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:ready_project/common/const/data.dart';
 import 'package:ready_project/common/layout/default_layout.dart';
+import 'package:ready_project/start_budget_management/layout/start_budget_management_bottom.dart';
 import 'package:ready_project/start_budget_management/layout/start_budget_management_middle.dart';
 import 'package:ready_project/start_budget_management/layout/start_budget_manament_top.dart';
 
@@ -53,6 +54,8 @@ class _StartBudgetManagementState extends ConsumerState<StartBudgetManagement> {
           children:[
             StartBudgetManamentTop(monthBudget: budget.month_budget),
             StartBudgetManagementMiddle(),
+            SizedBox(height: 16.0,),
+            StartBudgetManagementBottom(),
           ],
 
         ),

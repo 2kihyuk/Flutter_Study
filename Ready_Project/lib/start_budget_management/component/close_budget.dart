@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ready_project/start_budget_management/view/close_budget_detail.dart';
 
 class CloseBudget extends StatelessWidget {
   const CloseBudget({super.key});
@@ -51,7 +52,11 @@ class CloseBudget extends StatelessWidget {
                 ),
               ),
               IconButton(
-                onPressed: (){},
+                onPressed: (){
+                  Navigator.of(context).push(
+                    MaterialPageRoute(builder: (_)=> CloseBudgetDetail())
+                  );
+                },
                 icon: Icon(Icons.arrow_right_alt),
               )
             ],
