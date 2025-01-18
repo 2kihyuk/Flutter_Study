@@ -19,7 +19,7 @@ class Incomeorexpense extends ConsumerWidget {
     List<String> daysOfWeek = ['일', '월', '화', '수', '목', '금', '토'];
 
     // Format the date in a custom way: 'd일 EEEE'
-    String formattedDate = '${now.day}일 ${daysOfWeek[now.weekday]}요일';
+    String formattedDate = '${now.day}일 ${daysOfWeek[now.weekday-1]}요일';
 
     return Container(
       padding: EdgeInsets.all(20),

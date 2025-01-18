@@ -4,7 +4,7 @@ import '../common/const/data.dart';
 import 'budget_model.dart';
 
 class BudgetNotifier extends StateNotifier<BudgetModel>{
-  BudgetNotifier() : super(BudgetModel(month_budget: 0.0, daily_budget: 0.0));
+  BudgetNotifier() : super(BudgetModel(month_budget: 0.0, daily_budget: 0.0,daily_budget_copy: 0.0, ));
 
 
   Future<void> getLoadData(String token) async{
@@ -39,14 +39,23 @@ class BudgetNotifier extends StateNotifier<BudgetModel>{
       state = BudgetModel(
         month_budget: state.month_budget,
         daily_budget: state.daily_budget + amount,
+        daily_budget_copy: state.daily_budget_copy,
+        daily_income_total: state.daily_income_total+amount,
+        daily_expense_total: state.daily_expense_total,
+
       );
     } else {
       state = BudgetModel(
         month_budget: state.month_budget,
         daily_budget: state.daily_budget - amount,
+        daily_budget_copy: state.daily_budget_copy,
+        daily_expense_total: state.daily_expense_total +amount,
+        daily_income_total: state.daily_income_total,
       );
     }
   }
+
+
 }
 
 

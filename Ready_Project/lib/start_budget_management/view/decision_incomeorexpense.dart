@@ -166,8 +166,6 @@ class _DecisionExpanseState extends State<DecisionIncomeorexpense> {
                   double amountValue = double.tryParse(amount) ?? 0.0;
                   String transactionType =
                       selectedExpanseIndex == 0 ? "수입" : "지출";
-                  // print('amountValue : $amountValue  /  category : $categoryItemString  / type : $transactionType  / date : ${DateFormat('yyyy-MM-dd').format(DateTime.now())}');
-                  // print(token);
 
                   // `Transaction` 객체 생성
                   Transaction transaction = Transaction(
