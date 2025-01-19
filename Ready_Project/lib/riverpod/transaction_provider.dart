@@ -28,3 +28,5 @@ final transactionsProvider = FutureProvider<List<Transaction>>((ref) async {
     throw Exception('Failed to load transactions');
   }
 });
+
+

@@ -1,6 +1,10 @@
 import 'package:dio/dio.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:lv2_actual/common/const/data.dart';
+
+import '../secure_storage/secure_storage.dart';
+
 
 /// Dio를 쓰는 이유.
 /// 인터셉트란. 중간에 가로채다.
@@ -8,6 +12,20 @@ import 'package:lv2_actual/common/const/data.dart';
 /// 2) 요청을 받을때
 /// 3) 에러가 났을때
 /// 이 세가지 경우에 대해서 중간에 가로채서 변환을해서 반환할 수 있다.
+///
+
+
+  final dioProvider = Provider<Dio>((ref) {
+    final dio =Dio();
+
+    final storage = ref.watch(secureStorageProvider);
+
+    dio.interceptors.add(
+      CustomInterceptor(storage: storage),
+    );
+
+    return dio;
+  });
 
 class CustomInterceptor extends Interceptor{
 

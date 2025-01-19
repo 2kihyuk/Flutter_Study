@@ -1,11 +1,16 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:ready_project/common/const/colors.dart';
 import 'package:ready_project/riverpod/budget_notifier.dart';
 import 'package:ready_project/start_budget_management/view/decision_incomeorexpense.dart';
 
+import '../../common/const/data.dart';
+
 class Incomeorexpense extends ConsumerWidget {
   const Incomeorexpense({super.key});
+
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -19,13 +24,13 @@ class Incomeorexpense extends ConsumerWidget {
     List<String> daysOfWeek = ['일', '월', '화', '수', '목', '금', '토'];
 
     // Format the date in a custom way: 'd일 EEEE'
-    String formattedDate = '${now.day}일 ${daysOfWeek[now.weekday-1]}요일';
+    String formattedDate = '${now.day}일 ${daysOfWeek[now.weekday - 1]}요일';
 
     return Container(
       padding: EdgeInsets.all(20),
       margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
       decoration: BoxDecoration(
-        color: Colors.blue[50],
+        color: PRIMARY_COLOR,
         borderRadius: BorderRadius.circular(10),
         boxShadow: [
           BoxShadow(
@@ -70,13 +75,13 @@ class Incomeorexpense extends ConsumerWidget {
               if (withoutComma.isNotEmpty) {
                 double parsedValue = double.tryParse(withoutComma) ?? 0.0;
                 String formattedValue =
-                    NumberFormat('#,###').format(parsedValue);
+                NumberFormat('#,###').format(parsedValue);
 
                 // TextController에 다시 형식을 적용한 값을 설정
                 _controller.value = _controller.value.copyWith(
                   text: formattedValue,
                   selection:
-                      TextSelection.collapsed(offset: formattedValue.length),
+                  TextSelection.collapsed(offset: formattedValue.length),
                 );
               }
             },
@@ -91,7 +96,7 @@ class Incomeorexpense extends ConsumerWidget {
               ),
               border: UnderlineInputBorder(),
               contentPadding:
-                  EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+              EdgeInsets.symmetric(vertical: 10, horizontal: 10),
               suffixIcon: IconButton(
                 icon: Icon(
                   Icons.add,
@@ -107,10 +112,10 @@ class Incomeorexpense extends ConsumerWidget {
                   );
                   if (updatedAmount != null) {
                     double amountValue = double.tryParse(
-                            updatedAmount.replaceAll(RegExp(r'[^0-9.]'), '')) ??
+                        updatedAmount.replaceAll(RegExp(r'[^0-9.]'), '')) ??
                         0;
                     bool isIncome =
-                        updatedAmount.startsWith('+'); // 수입인지 지출인지 판별
+                    updatedAmount.startsWith('+'); // 수입인지 지출인지 판별
 
                     // `budgetProvider`를 통해 상태 업데이트
                     ref
@@ -132,4 +137,9 @@ class Incomeorexpense extends ConsumerWidget {
       ),
     );
   }
+
 }
+
+
+
+

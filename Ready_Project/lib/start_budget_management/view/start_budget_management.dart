@@ -54,7 +54,7 @@ class _StartBudgetManagementState extends ConsumerState<StartBudgetManagement> {
           children:[
             StartBudgetManamentTop(monthBudget: budget.month_budget),
             StartBudgetManagementMiddle(),
-            SizedBox(height: 16.0,),
+            SizedBox(height: 24.0,),
             StartBudgetManagementBottom(),
           ],
 

@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lv2_actual/common/dio/dio.dart';
 import 'package:lv2_actual/common/layout/default_layout.dart';
 import 'package:lv2_actual/product/component/product_card.dart';
@@ -9,7 +10,7 @@ import 'package:lv2_actual/restaurant/repository/restaurant_repository.dart';
 import '../../common/const/data.dart';
 import '../model/restaurant_detail_model.dart';
 
-class RestaurantDetailScreen extends StatelessWidget {
+class RestaurantDetailScreen extends ConsumerWidget {
   final String id;
 
   const RestaurantDetailScreen({required this.id, super.key});
@@ -28,25 +29,27 @@ class RestaurantDetailScreen extends StatelessWidget {
   //   return resp.data;
   // }
 
-  Future<RestaurantDetailModel> getRestaurantDetail() async{
-    final dio = Dio();
-    //여기서 dio.interceptors.add()에 우리가 정의한 customInterceptor를 넣어주면서, dio요청이 딱 전송되기 전에 interceptor가 해당 요청을 가로채서
-    //요청을 보낼떄, 요청을 받을때, 에러가 발생할때의 3가지 케이스에 대한 로직을 확인한다.
-
-    dio.interceptors.add(
-      CustomInterceptor(storage: storage),
-    );
-    final repository = RestaurantRepository(dio,baseUrl: 'http://$ip/restaurant');
-
-    return repository.getRestaurantDetail(id: id);
-  }
+  // Future<RestaurantDetailModel> getRestaurantDetail(WidgetRef ref) async{
+  //   // final dio = Dio();
+  //   // //여기서 dio.interceptors.add()에 우리가 정의한 customInterceptor를 넣어주면서, dio요청이 딱 전송되기 전에 interceptor가 해당 요청을 가로채서
+  //   // //요청을 보낼떄, 요청을 받을때, 에러가 발생할때의 3가지 케이스에 대한 로직을 확인한다.
+  //   //
+  //   // dio.interceptors.add(
+  //   //   CustomInterceptor(storage: storage),
+  //   // );
+  //   // final dio = ref.watch(dioProvider);
+  //   // final repository = RestaurantRepository(dio,baseUrl: 'http://$ip/restaurant');
+  //   //
+  //   // return repository.getRestaurantDetail(id: id);
+  //   return ref.watch(restaurantRepositoryProvider).getRestaurantDetail(id: id);
+  // }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return DefaultLayout(
         title: '불타는 떡볶이',
         child: FutureBuilder<RestaurantDetailModel>(
-          future: getRestaurantDetail(),
+          future: ref.watch(restaurantRepositoryProvider).getRestaurantDetail(id: id),
           builder: (_,AsyncSnapshot<RestaurantDetailModel> snapshot){
             print(snapshot.data);
 

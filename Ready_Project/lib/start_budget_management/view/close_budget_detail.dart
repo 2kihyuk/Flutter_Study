@@ -9,6 +9,7 @@ import 'package:ready_project/riverpod/budget_notifier.dart';
 
 import '../../common/const/data.dart';
 import '../../common/const/transaction.dart';
+import '../../riverpod/daily_summary_notifier.dart';
 import '../../riverpod/transaction_provider.dart';
 
 class CloseBudgetDetail extends ConsumerStatefulWidget {
@@ -26,11 +27,16 @@ class _CloseBudgetDetailState extends ConsumerState<CloseBudgetDetail> {
   }
 
   List<Transaction> transactions = [];
+  double dailyExpenseTotal = 0.0;
+  double dailyIncomeTotal = 0.0;
+
+
 
   // @override
   @override
   Widget build(BuildContext context) {
     final budget = ref.watch(budgetProvider);
+    final dailySummary = ref.watch(dailySummaryProvider);
 
     return DefaultLayout(
       title: '',
@@ -57,7 +63,7 @@ class _CloseBudgetDetailState extends ConsumerState<CloseBudgetDetail> {
           Padding(
             padding: const EdgeInsets.only(left: 24.0),
             child: Text(
-              '지출: ${NumberFormat('#,###').format(budget.daily_expense_total)}원', // 지출 데이터를 provider로부터 가져오기
+              '지출: ${NumberFormat('#,###').format(dailySummary.dailyExpenseTotal)}원', // 지출 데이터를 provider로부터 가져오기
               style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
             ),
           ),
@@ -67,7 +73,7 @@ class _CloseBudgetDetailState extends ConsumerState<CloseBudgetDetail> {
           Padding(
             padding: const EdgeInsets.only(left: 24.0),
             child: Text(
-              '수입: ${NumberFormat('#,###').format(budget.daily_income_total)}원',
+              '수입: ${NumberFormat('#,###').format(dailySummary.dailyIncomeTotal)}원',
               // 수입 데이터를 provider로부터 가져오기
               style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.w700),
             ),
@@ -78,7 +84,7 @@ class _CloseBudgetDetailState extends ConsumerState<CloseBudgetDetail> {
           Padding(
             padding: const EdgeInsets.only(left: 24.0),
             child: Text(
-              '오늘 하루 잔여 예산: ${NumberFormat('#,###').format((budget.daily_budget_copy- budget.daily_expense_total + budget.daily_income_total).toInt())}원',
+              '오늘 하루 잔여 예산: ${NumberFormat('#,###').format((budget.daily_budget_copy - dailySummary.dailyExpenseTotal + dailySummary.dailyIncomeTotal).toInt())}원',
             ),
           ),
           SizedBox(
@@ -93,9 +99,9 @@ class _CloseBudgetDetailState extends ConsumerState<CloseBudgetDetail> {
 
           Expanded(
             child: ListView.builder(
-              itemCount: transactions.length,
+              itemCount: dailySummary.transactions.length,
               itemBuilder: (context, index) {
-                Transaction transaction = transactions[index];
+                Transaction transaction = dailySummary.transactions[index];
 
                 String categoryLabel = transaction.category;
                 String categoryImage = getCategoryImage(
@@ -156,6 +162,7 @@ class _CloseBudgetDetailState extends ConsumerState<CloseBudgetDetail> {
             onPressed: (){
               ///여기에는 트랜잭션 데이터를 저장하고 마감하고, budget값들을 초기화 시키는 작업이 필요함. 하루의 지출계획이 더이상 없다. 수입계획이 더이상 없다 할때 , 지출을 마감할때 쓰는 곳.
               ///이 작업이 12시 지나서도 자동으로 행해지는것이 가능한가?
+              ///여기서 오늘 하루 잔예 총 예산을 post로 쏴줘야함.
             },
             child: Text('저장'),
           ),
@@ -179,7 +186,7 @@ class _CloseBudgetDetailState extends ConsumerState<CloseBudgetDetail> {
 
     try {
       final resp = await dio.get(
-        'http://$ip/transactions?date=${DateFormat('yyyy-MM-dd').format(DateTime.now())}',
+        'http://$ip/transactions/daily?date=${DateFormat('yyyy-MM-dd').format(DateTime.now())}',
         options: Options(
           headers: {
             'Authorization': 'Bearer $token',
@@ -188,17 +195,25 @@ class _CloseBudgetDetailState extends ConsumerState<CloseBudgetDetail> {
       );
 
       if (resp.statusCode == 200) {
-        List<dynamic> data = resp.data; // 데이터를 받아서
-        List<Transaction> fetchedTransactions =
-            data.map((json) => Transaction.fromJson(json)).toList();
+        final dailyIncomeTotal = resp.data['daily_income_total'];
+        final dailyExpenseTotal = resp.data['daily_expense_total'];
 
-        // 상태를 업데이트하여 UI 갱신
-        setState(() {
-          transactions = fetchedTransactions;
-        });
+        List<dynamic> data = resp.data['transactions']; // 데이터를 받아서
+        List<Transaction> fetchedTransactions =
+        data.map((json) => Transaction.fromJson(json)).toList();
+
+        // 상태 업데이트
+        final dailySummary = DailySummary(
+          transactions: fetchedTransactions,
+          dailyIncomeTotal: dailyIncomeTotal,
+          dailyExpenseTotal: dailyExpenseTotal,
+        );
+
+        ref.read(dailySummaryProvider.notifier).updateDailySummary(dailySummary);
       }
     } catch (e) {
       print('CloseBudgetDetail Try-Catch Error : $e');
     }
   }
+
 }

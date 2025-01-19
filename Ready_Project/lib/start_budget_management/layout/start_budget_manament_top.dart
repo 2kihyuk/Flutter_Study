@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:ready_project/start_budget_management/view/edit_month_budget.dart';
 
 class StartBudgetManamentTop extends ConsumerWidget {
   final double monthBudget;
@@ -32,7 +33,7 @@ class StartBudgetManamentTop extends ConsumerWidget {
                 onPressed: () {
                   //수정 페이지
                   Navigator.of(context).push(
-                    MaterialPageRoute(builder: (_) => Container()),
+                    MaterialPageRoute(builder: (_) => EditMonthBudget()),
                   );
                 },
                 child: Text(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ready_project/start_budget_management/component/safebox.dart';
 import 'package:ready_project/start_budget_management/component/week_emotion.dart';
 
 class StartBudgetManagementBottom extends StatelessWidget {
@@ -10,6 +11,8 @@ class StartBudgetManagementBottom extends StatelessWidget {
 
       children:[
         WeekEmotion(),
+        SizedBox(height: 40.0,),
+        Safebox(),
       ]
 
     );

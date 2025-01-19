@@ -38,6 +38,27 @@ class Transaction {
       date: DateTime.parse(json['date']), // 날짜는 'yyyy-MM-dd' 형식으로 변환
     );
   }
-
 }
 
+
+class DailySummary {
+  final List<Transaction> transactions; // 트랜잭션 리스트
+  final double dailyExpenseTotal; // 하루 지출 총합
+  final double dailyIncomeTotal; // 하루 수입 총합
+
+  DailySummary({
+    required this.transactions,
+    required this.dailyExpenseTotal,
+    required this.dailyIncomeTotal,
+  });
+
+  factory DailySummary.fromJson(Map<String, dynamic> json) {
+    return DailySummary(
+      transactions: (json['transactions'] as List)
+          .map((item) => Transaction.fromJson(item))
+          .toList(),
+      dailyExpenseTotal: json['daily_expense_total'].toDouble(),
+      dailyIncomeTotal: json['daily_income_total'].toDouble(),
+    );
+  }
+}
