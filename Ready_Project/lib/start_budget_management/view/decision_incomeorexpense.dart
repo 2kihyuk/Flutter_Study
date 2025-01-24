@@ -190,6 +190,7 @@ class _DecisionExpanseState extends State<DecisionIncomeorexpense> {
                       data: transactionJson
                     );
                     if(resp.statusCode==200){
+                      // await ref.read(budgetProvider.notifier).getDailyBudgetAnytime(token!);
                       Navigator.pop(context, _controller.text);
                       print('DecisionIncomeOrExpense에서 Transaction데이터를 서버에 성공적으로 전송');
                     }else{

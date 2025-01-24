@@ -139,7 +139,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                 ),
                 AmountInputField(
                   controller: monthFixedExpanseController,
-                  hintText: '한 달 총 수입액을 입력해주세요.',
+                  hintText: '한 달 고정지출액을 입력해주세요.',
                 ),
 
                 SizedBox(

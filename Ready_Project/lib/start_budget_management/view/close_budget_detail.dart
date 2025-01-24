@@ -30,8 +30,6 @@ class _CloseBudgetDetailState extends ConsumerState<CloseBudgetDetail> {
   double dailyExpenseTotal = 0.0;
   double dailyIncomeTotal = 0.0;
 
-
-
   // @override
   @override
   Widget build(BuildContext context) {

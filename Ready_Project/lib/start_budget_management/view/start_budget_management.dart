@@ -10,11 +10,6 @@ import 'package:ready_project/start_budget_management/layout/start_budget_maname
 
 import '../../riverpod/budget_notifier.dart';
 
-
-///kihyuk5566@naver.com 1234
-///
-///
-
 class StartBudgetManagement extends ConsumerStatefulWidget {
   const StartBudgetManagement({super.key});
 
@@ -24,6 +19,7 @@ class StartBudgetManagement extends ConsumerStatefulWidget {
 }
 
 class _StartBudgetManagementState extends ConsumerState<StartBudgetManagement> {
+
   @override
   void initState() {
     super.initState();
@@ -37,17 +33,10 @@ class _StartBudgetManagementState extends ConsumerState<StartBudgetManagement> {
     }
   }
 
-  // double month_budget = 0.0;
-  // // 초기값을 0.0으로 설정
-  // double daily_budget = 0.0;
-  // // 초기값을 0.0으로 설정
-  // String birthDate = "";
-  //
-  // String name = "";
-
   @override
   Widget build(BuildContext context) {
     final budget = ref.watch(budgetProvider); // 상태 구독
+
     return Scaffold(
       body: SafeArea(
         child: Column(
