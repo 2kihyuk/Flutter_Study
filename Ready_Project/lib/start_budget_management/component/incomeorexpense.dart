@@ -150,26 +150,50 @@ class Incomeorexpense extends ConsumerStatefulWidget {
 }
 
 class _IncomeorexpenseState extends ConsumerState<Incomeorexpense> {
-  // String? token;  // 토큰을 저장할 변수
-  //
-  // // 토큰을 비동기적으로 읽어오는 함수
-  // Future<void> getToken() async {
-  //   final storage = FlutterSecureStorage();
-  //   token = await storage.read(key: JWT_TOKEN);
-  //   print("IncomeOrExpenses : getToken함수 : $token");
-  //
-  //   // 토큰을 읽은 후 getDailyBudgetAnytime 호출
-  //   if (token != null) {
-  //     await ref.read(budgetProvider.notifier).getDailyBudgetAnytime(token!);
-  //   } else {
-  //     print("토큰을 가져오는 데 실패했습니다.");
-  //   }
-  // }
 
+  double daily_budget_anytime = 0;
+   // 토큰을 저장할 변수
+  Future<void> getLoadData() async {
+
+    final dio = Dio();
+    final storage = FlutterSecureStorage();
+
+    final token = await storage.read(key: JWT_TOKEN);
+
+    try {
+      final response = await dio.get(
+        'http://$ip/user-info',
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $token',
+          },
+        ),
+      );
+      if (response.statusCode == 200) {
+        print("IncomeOrExpense : GetLoadData : ${response.data}");
+        setState(() {
+          daily_budget_anytime = response.data['dailyBudget'];
+        });
+
+
+      } else {
+        print('API 요청 실패: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('에러 발생: IncomeOrExpense - getLoadData -  $e');
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getLoadData();  // IncomeorExpense 위젯이 나타날 때마다 호출
+  }
   // @override
-  // void initState() {
-  //   super.initState();
-  //   getToken();  // IncomeorExpense 위젯이 나타날 때마다 호출
+  // void didChangeDependencies() {
+  //   // TODO: implement didChangeDependencies
+  //   super.didChangeDependencies();
+  //   getLoadData();
   // }
 
   @override
@@ -216,7 +240,7 @@ class _IncomeorexpenseState extends ConsumerState<Incomeorexpense> {
 
           // 하루 예산 텍스트
           Text(
-            '오늘 하루 예산은 ${NumberFormat("#,###").format(budget.daily_budget)}원',
+            '오늘 하루 예산은 ${NumberFormat("#,###").format(daily_budget_anytime)}원',
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w500,
@@ -269,17 +293,13 @@ class _IncomeorexpenseState extends ConsumerState<Incomeorexpense> {
                         builder: (_) =>
                             DecisionIncomeorexpense(initialAmount: amount)),
                   );
+                  setState(() {
+                    getLoadData();
+                  });
                   if (updatedAmount != null) {
                     double amountValue = double.tryParse(
                         updatedAmount.replaceAll(RegExp(r'[^0-9.]'), '')) ??
                         0;
-                    // bool isIncome =
-                    // updatedAmount.startsWith('+'); // 수입인지 지출인지 판별
-
-                    // // `budgetProvider`를 통해 상태 업데이트
-                    // ref
-                    //     .read(budgetProvider.notifier)
-                    //     .updateDailyBudget(amountValue, isIncome);
                   }
 
                   _controller.clear();
@@ -296,6 +316,9 @@ class _IncomeorexpenseState extends ConsumerState<Incomeorexpense> {
       ),
     );
   }
+
+
+
 }
 
 

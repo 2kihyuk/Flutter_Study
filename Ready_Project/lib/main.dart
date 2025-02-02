@@ -2,13 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ready_project/common/view/root_tab.dart';
 import 'package:ready_project/common/view/splash_screen.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 
 
 
-void main()  {
+void main() async{
   // 한국어 로케일 초기화
 
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await initializeDateFormatting();
 
   runApp(
     ProviderScope(child: _App()),

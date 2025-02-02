@@ -5,42 +5,7 @@ import '../common/const/data.dart';
 import 'budget_model.dart';
 
 class BudgetNotifier extends StateNotifier<BudgetModel>{
-  BudgetNotifier() : super(BudgetModel(month_budget: 0.0, daily_budget: 0.0,daily_budget_copy: 0.0, ));
-
-  // Future<void> getDailyBudgetAnytime(String token) async{
-  //
-  //   final dio = Dio();
-  //
-  //   try {
-  //     print("Requesting daily-adjusted-budget with token: $token");
-  //     final response = await dio.get(
-  //       'http://$ip/transactions/daily-adjusted-budget?date=${DateFormat('yyyy-MM-dd').format(DateTime.now())}',
-  //       options: Options(
-  //         headers: {
-  //           "Authorization": "Bearer $token",
-  //           "Content-Type": "application/json"
-  //         },
-  //       ),
-  //     );
-  //     if (response.statusCode == 200) {
-  //       print("BudgetNotifier : getDailyBudgetAnyTime : ${response.data}");
-  //       final dailyAdjustedBudget = response.data;
-  //
-  //       state = BudgetModel(
-  //         month_budget: state.month_budget, // 기존 month_budget 유지
-  //         daily_budget: dailyAdjustedBudget != null ? dailyAdjustedBudget.toDouble() : 0.0, // daily_adjusted_budget 값으로 업데이트
-  //         daily_budget_copy: state.daily_budget_copy, // 기존 daily_budget_copy 유지
-  //
-  //       );
-  //       print("State : ${state.daily_budget}");
-  //     } else {
-  //       print('BudgetNotifier - getDailyBudgetAnyTime - API 요청 실패: ${response.statusCode}');
-  //       print('BudgetNotifier - getDailyBudgetAnyTime - 실패 응답 데이터: ${response.data}');
-  //     }
-  //   } catch (e) {
-  //     print('에러 발생: BudgetNotifier - getDailyBudgetAnytime $e');
-  //   }
-  // }
+  BudgetNotifier() : super(BudgetModel(month_budget: 0.0, daily_budget: 0.0));
 
 
   Future<void> getLoadData(String token) async {

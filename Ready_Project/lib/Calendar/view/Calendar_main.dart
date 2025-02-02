@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ready_project/common/layout/default_layout.dart';
-import 'package:table_calendar/table_calendar.dart';
+import 'package:ready_project/Calendar/view/Calendar.dart';
 
 class CalendarMain extends StatelessWidget {
   const CalendarMain({super.key});
@@ -8,18 +8,7 @@ class CalendarMain extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DefaultLayout(
-      title: '',
-      child: Container(
-        child: Column(
-          children: [
-            TableCalendar(
-              focusedDay: DateTime.now(),
-              firstDay: DateTime.utc(2000,01,01),
-              lastDay: DateTime.utc(2099,12,31),
-            ),
-          ],
-        ),
-      ),
+      child:Calendar(),
     );
   }
 }

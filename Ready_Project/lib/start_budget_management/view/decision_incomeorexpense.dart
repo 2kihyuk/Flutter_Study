@@ -33,6 +33,17 @@ class _DecisionExpanseState extends State<DecisionIncomeorexpense> {
 
   @override
   Widget build(BuildContext context) {
+
+    DateTime now = DateTime.now();
+    DateTime lastDayOfMonth = DateTime(now.year, now.month + 1, 0); // 이번 달 마지막 날짜
+
+    // 남은 일수 계산
+    int remainingDays = lastDayOfMonth.difference(now).inDays;
+
+    // 남은 일수를 "D-15" 형식으로 출력
+    String remainingDaysText = "D-$remainingDays";
+
+
     return Scaffold(
       appBar: AppBar(),
       body: SafeArea(
@@ -50,7 +61,7 @@ class _DecisionExpanseState extends State<DecisionIncomeorexpense> {
                 ),
               ),
               Text(
-                'D-15 / 300000원', //여기에 남은 일수와 전체예산에서 현재날짜까지 지출한 금액을 뺸 값.
+                '$remainingDaysText / 300000원', //여기에 남은 일수와 전체예산에서 현재날짜까지 지출한 금액을 뺸 값.
                 style: TextStyle(
                   fontFamily: 'Pretendard',
                   fontWeight: FontWeight.w500,

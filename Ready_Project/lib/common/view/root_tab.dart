@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:ready_project/AIServiceScreen/view/ai_chat_screen.dart';
+import 'package:ready_project/Calendar/view/Calendar_main.dart';
+import 'package:ready_project/ProfileSetting/view/setting_screen.dart';
 import 'package:ready_project/start_budget_management/view/start_budget_management.dart';
 
+import '../../Calendar/view/Calendar.dart';
 import '../const/colors.dart';
 import '../layout/default_layout.dart';
 
@@ -47,9 +51,9 @@ class _RootTabState extends State<RootTab> with SingleTickerProviderStateMixin {
         controller: controller,
         children: [
           StartBudgetManagement(),
-          Container(child: Text('예산')),
-          Container(child: Text('AI서비스')),
-          Container(child: Text('프로필')),
+          CalendarMain(),
+          AiChatScreen(),
+          SettingsScreen(),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(

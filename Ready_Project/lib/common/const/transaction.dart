@@ -45,11 +45,13 @@ class DailySummary {
   final List<Transaction> transactions; // 트랜잭션 리스트
   final double dailyExpenseTotal; // 하루 지출 총합
   final double dailyIncomeTotal; // 하루 수입 총합
+  final double dailyBudgetNoChange;
 
   DailySummary({
     required this.transactions,
     required this.dailyExpenseTotal,
     required this.dailyIncomeTotal,
+    required this.dailyBudgetNoChange
   });
 
   factory DailySummary.fromJson(Map<String, dynamic> json) {
@@ -59,6 +61,7 @@ class DailySummary {
           .toList(),
       dailyExpenseTotal: json['daily_expense_total'].toDouble(),
       dailyIncomeTotal: json['daily_income_total'].toDouble(),
+      dailyBudgetNoChange: json['daily_budget_no_change'].toDouble(),
     );
   }
 }

@@ -47,11 +47,30 @@ class BudgetModel {
   double daily_budget; // 하루 총 예산
   final double daily_budget_copy; // 하루 총 예산 복사값 - 변동없음
 
+  // BudgetModel({
+  //   required this.month_budget,
+  //   required this.daily_budget,
+  //   required this.daily_budget_copy,
+  // });
+  //
+  // factory BudgetModel.fromJson(Map<String, dynamic> json) {
+  //   return BudgetModel(
+  //     month_budget: json['monthBudget'] != null
+  //         ? (json['monthBudget'] as num).toDouble()
+  //         : 0.0,
+  //     daily_budget: json['dailyBudget'] != null
+  //         ? (json['dailyBudget'] as num).toDouble()
+  //         : 0.0,
+  //     daily_budget_copy: json['dailyBudget'] != null
+  //         ? (json['dailyBudget'] as num).toDouble()
+  //         : 0.0, // daily_budget을 복사해서 초기화
+  //   );
+  // }
+  // 생성자에서 daily_budget_copy는 daily_budget 값을 복사하여 초기화
   BudgetModel({
     required this.month_budget,
     required this.daily_budget,
-    required this.daily_budget_copy,
-  });
+  }) : daily_budget_copy = daily_budget; // daily_budget의 값을 복사해서 초기화
 
   factory BudgetModel.fromJson(Map<String, dynamic> json) {
     return BudgetModel(
@@ -61,9 +80,6 @@ class BudgetModel {
       daily_budget: json['dailyBudget'] != null
           ? (json['dailyBudget'] as num).toDouble()
           : 0.0,
-      daily_budget_copy: json['dailyBudget'] != null
-          ? (json['dailyBudget'] as num).toDouble()
-          : 0.0, // daily_budget을 복사해서 초기화
     );
   }
 
