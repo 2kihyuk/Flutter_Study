@@ -57,8 +57,9 @@ class _RootTabState extends State<RootTab> with SingleTickerProviderStateMixin {
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
-        selectedItemColor: PRIMARY_COLOR,
-        unselectedItemColor: BODY_TEXT_COLOR,
+        backgroundColor: Colors.white,
+        // selectedItemColor: PRIMARY_COLOR,
+        // unselectedItemColor: BODY_TEXT_COLOR,
         selectedFontSize: 10,
         unselectedFontSize: 10,
         type: BottomNavigationBarType.fixed,

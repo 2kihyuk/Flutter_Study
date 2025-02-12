@@ -21,20 +21,17 @@ class _CalendarState extends State<Calendar> {
 
   List<Transaction> transactions = [];
 
-  // 예산 데이터를 날짜별로 저장
-  Map<DateTime, double> budgetData = {
-    DateTime(2025, 1, 21): 50000,
-    DateTime(2025, 1, 22): 30000,
-  };
   String selectedDateString =
       "${DateTime.now().toUtc().year}년 ${DateTime.now().toUtc().month}월 ${DateTime.now().toUtc().day}일";
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: Padding(
         padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 40.0),
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             TableCalendar(
@@ -74,8 +71,9 @@ class _CalendarState extends State<Calendar> {
               ),
             ),
             Divider(),
+
             Container(
-              color: Colors.blue,
+
               padding: EdgeInsets.only(left: 12.0, right: 12.0, top: 8.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -85,7 +83,9 @@ class _CalendarState extends State<Calendar> {
                 ],
               ),
             ),
+
             Expanded(
+
               child: ListView.builder(
                 itemCount: transactions.length,
                 itemBuilder: (BuildContext context, int index) {
@@ -93,10 +93,11 @@ class _CalendarState extends State<Calendar> {
                   Transaction transaction = transactions[index];
                   String categoryLabel = transaction.category;
                   String categoryImage = getCategoryImage(
-                      categoryLabel); // Function to get the image path
+                      categoryLabel);
+
                   return Container(
                     padding: EdgeInsets.all(16.0),
-                    margin: EdgeInsets.symmetric(vertical: 4.0),
+                    margin: EdgeInsets.symmetric(vertical:6),
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(16),
@@ -114,10 +115,12 @@ class _CalendarState extends State<Calendar> {
                       children: [
                         // 날짜
                         Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
+
+                            SizedBox(height: 4),
                             Text(
-                              DateFormat('yyyy-MM-dd HH:mm').format(transaction.date),
+                              DateFormat('yyyy-MM-dd').format(transaction.date),
                               style: TextStyle(
                                 fontFamily: 'Pretendard',
                                 fontWeight: FontWeight.bold,
@@ -125,63 +128,43 @@ class _CalendarState extends State<Calendar> {
                                 color: Colors.black,
                               ),
                             ),
-                            SizedBox(height: 4),
-                            Text(
-                              '일자',
-                              style: TextStyle(
-                                fontFamily: 'Pretendard',
-                                fontWeight: FontWeight.w400,
-                                fontSize: 12,
-                                color: Colors.grey[600],
-                              ),
-                            ),
                           ],
                         ),
                         // 금액과 수입/지출
                         Column(
-                          crossAxisAlignment: CrossAxisAlignment.end,
+                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Text(
-                              "${transaction.amount}",
+                              NumberFormat("#,###").format(transaction.amount)+"원",
                               style: TextStyle(
                                 fontFamily: 'Pretendard',
                                 fontWeight: FontWeight.bold,
                                 fontSize: 18,
-                                color: Colors.lightBlueAccent,
+                                color: Colors.black,
                               ),
                             ),
                             SizedBox(height: 4),
                             Text(
-                              "${transaction.type}",
+                              "${transaction.type} - ${transaction.category}",
                               style: TextStyle(
                                 fontFamily: 'Pretendard',
                                 fontWeight: FontWeight.w500,
                                 fontSize: 14,
-                                color: Colors.blueAccent,
+                                color: Colors.black,
                               ),
                             ),
                           ],
                         ),
                         // 카테고리 및 아이콘
                         Column(
-                          crossAxisAlignment: CrossAxisAlignment.end,
+                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Row(
                               children: [
                                 Image.asset(
                                   categoryImage,
-                                  width: 30, // You can adjust the size of the icon
-                                  height: 30,
-                                ),
-                                SizedBox(width: 4),
-                                Text(
-                                  "${transaction.category}",
-                                  style: TextStyle(
-                                    fontFamily: 'Pretendard',
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 14,
-                                    color: Colors.blue,
-                                  ),
+                                  width: 40, // You can adjust the size of the icon
+                                  height: 40,
                                 ),
                               ],
                             ),

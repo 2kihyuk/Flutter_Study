@@ -25,13 +25,14 @@ class CloseBudget extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(
-                Icons.monetization_on,
-                color: Colors.orange, // 아이콘 색상
+              Image.asset(
+                'assets/images/money_icon.png',
+                width: 25,
+                height: 25,
               ),
-              SizedBox(width: 8), // 아이콘과 텍스트 간 간격
+              SizedBox(width: 16), // 아이콘과 텍스트 간 간격
               Text(
-                '오늘 지출을 마감하세요',
+                '오늘 내역을 확인하세요',
                 style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
@@ -43,7 +44,7 @@ class CloseBudget extends StatelessWidget {
           Row(
             children: [
               Text(
-                '지출 마감하기',
+                '오늘 영수증 보기',
                 style: TextStyle(
                   fontWeight: FontWeight.w700,
                   fontFamily: 'Pretendard',

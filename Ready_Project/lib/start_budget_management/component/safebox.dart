@@ -26,9 +26,10 @@ class Safebox extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(
-                Icons.monetization_on,
-                color: Colors.orange, // 아이콘 색상
+              Image.asset(
+                'assets/images/money_icon.png',
+                width: 25,
+                height: 25,
               ),
               SizedBox(width: 15), // 아이콘과 텍스트 간 간격
               Text(

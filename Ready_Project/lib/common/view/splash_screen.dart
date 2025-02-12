@@ -33,6 +33,7 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<void> checkToken() async {
+    await Future.delayed(Duration(seconds: 2));
     String? token = await storage.read(key: JWT_TOKEN);
     print('1번 체크포인트');
     if (token != null) {
@@ -65,17 +66,23 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return DefaultLayout(
-        backgroundColor: PRIMARY_COLOR,
+        backgroundColor: Colors.blueAccent,
         child: SizedBox(
           width: MediaQuery.of(context).size.width,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // Image.asset(
-              //   'asset/img/logo/logo.png',
-              //   width: MediaQuery.of(context).size.width / 2,
-              // ),
-              Text('Splash Screen'),
+              Image.asset(
+                'assets/images/FinCare.png',
+                width: MediaQuery.of(context).size.width / 2,
+              ),
+              Text(
+                'FinCare를 통한 예산관리',
+              style: TextStyle(
+                fontSize: 24.0,
+                fontWeight: FontWeight.w900,
+                color: Colors.white
+              ),),
               SizedBox(
                 height: 16.0,
               ),

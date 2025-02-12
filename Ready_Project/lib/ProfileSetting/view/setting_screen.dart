@@ -21,7 +21,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('설정')),
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        title: Text('설정'),
+        backgroundColor: Colors.white,
+      ),
       body: ListView(
         children: [
           ListTile(
@@ -31,23 +35,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
               decoration: InputDecoration(hintText: '변경할 닉네임을 작성해주세요.'),
             ),
           ),
-          ListTile(
-              title: Text('한달 총 수익 변경하기'),
-              subtitle:
-              TextField(
-                controller: _monthBudgetController,
-                decoration: InputDecoration(hintText: '현재 한 달 총 수익은 3,300,000원 입니다.'),
-              )
-          ),
-          ListTile(
-              title: Text('한달 고정 지출액 변경하기'),
-              subtitle:
-              TextField(
-                controller: _monthBudgetController,
-                decoration: InputDecoration(hintText: '현재 한 달 고정 지출액은 300,000원 입니다.'),
-              )
-          ),
-
+          // ListTile(
+          //     title: Text('한달 총 수익 변경하기'),
+          //     subtitle: TextField(
+          //       controller: _monthBudgetController,
+          //       decoration:
+          //           InputDecoration(hintText: '현재 한 달 총 수익은 3,300,000원 입니다.'),
+          //     )),
+          // ListTile(
+          //     title: Text('한달 고정 지출액 변경하기'),
+          //     subtitle: TextField(
+          //       controller: _monthBudgetController,
+          //       decoration:
+          //           InputDecoration(hintText: '현재 한 달 고정 지출액은 300,000원 입니다.'),
+          //     )),
           SwitchListTile(
             title: Text('알림 설정'),
             value: _isNotificationEnabled,

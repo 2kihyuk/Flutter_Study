@@ -9,7 +9,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 final storage = FlutterSecureStorage();
 
-final emulatorIp = '10.0.0.2:3000';
+final emulatorIp = '52.79.158.63:8080';
 final simulatorIp = '52.79.158.63:8080';
 
 final ip = Platform.isIOS ? simulatorIp : emulatorIp;

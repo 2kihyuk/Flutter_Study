@@ -5,8 +5,6 @@ import 'package:ready_project/common/view/splash_screen.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
 
-
-
 void main() async{
   // 한국어 로케일 초기화
 
@@ -27,6 +25,7 @@ class _App extends StatelessWidget {
     return MaterialApp(
       locale: Locale('ko', 'KR'), // 한국어로 설정
       theme: ThemeData(
+        fontFamily: 'Pretendard'
       ),
       debugShowCheckedModeBanner: false,
       home: SplashScreen(),

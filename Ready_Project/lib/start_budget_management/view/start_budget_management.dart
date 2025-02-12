@@ -38,6 +38,7 @@ class _StartBudgetManagementState extends ConsumerState<StartBudgetManagement> {
     final budget = ref.watch(budgetProvider); // 상태 구독
 
     return Scaffold(
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: Column(
           children:[

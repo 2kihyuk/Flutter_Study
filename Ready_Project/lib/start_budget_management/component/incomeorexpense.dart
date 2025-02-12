@@ -189,12 +189,7 @@ class _IncomeorexpenseState extends ConsumerState<Incomeorexpense> {
     super.initState();
     getLoadData();  // IncomeorExpense 위젯이 나타날 때마다 호출
   }
-  // @override
-  // void didChangeDependencies() {
-  //   // TODO: implement didChangeDependencies
-  //   super.didChangeDependencies();
-  //   getLoadData();
-  // }
+
 
   @override
   Widget build(BuildContext context) {
@@ -214,7 +209,7 @@ class _IncomeorexpenseState extends ConsumerState<Incomeorexpense> {
       padding: EdgeInsets.all(20),
       margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
       decoration: BoxDecoration(
-        color: PRIMARY_COLOR,
+        color: Colors.white,
         borderRadius: BorderRadius.circular(10),
         boxShadow: [
           BoxShadow(
@@ -253,7 +248,6 @@ class _IncomeorexpenseState extends ConsumerState<Incomeorexpense> {
           TextField(
             onChanged: (value) {
               String withoutComma = value.replaceAll(RegExp(r','), '');
-
               // 숫자가 있으면 파싱하고 쉼표 추가
               if (withoutComma.isNotEmpty) {
                 double parsedValue = double.tryParse(withoutComma) ?? 0.0;
@@ -268,8 +262,15 @@ class _IncomeorexpenseState extends ConsumerState<Incomeorexpense> {
                 );
               }
             },
+
             controller: _controller,
             decoration: InputDecoration(
+              enabledBorder: UnderlineInputBorder(
+                borderSide: BorderSide(color: Colors.black), // 비활성 상태의 색상
+              ),
+              focusedBorder: UnderlineInputBorder(
+                borderSide: BorderSide(color: Colors.blue), // 포커스 상태의 색상
+              ),
               hintText: "금액을 입력하세요",
               floatingLabelBehavior: FloatingLabelBehavior.auto,
               labelStyle: TextStyle(
@@ -283,7 +284,6 @@ class _IncomeorexpenseState extends ConsumerState<Incomeorexpense> {
               suffixIcon: IconButton(
                 icon: Icon(
                   Icons.add,
-                  color: Colors.blue,
                 ),
                 onPressed: () async {
                   String amount = _controller.text;
@@ -301,7 +301,6 @@ class _IncomeorexpenseState extends ConsumerState<Incomeorexpense> {
                         updatedAmount.replaceAll(RegExp(r'[^0-9.]'), '')) ??
                         0;
                   }
-
                   _controller.clear();
                   //버튼 눌러서 다음 화면으로 넘어가는 로직
                 },
@@ -316,9 +315,4 @@ class _IncomeorexpenseState extends ConsumerState<Incomeorexpense> {
       ),
     );
   }
-
-
-
 }
-
-

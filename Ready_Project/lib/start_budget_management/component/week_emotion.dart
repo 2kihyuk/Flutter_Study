@@ -111,6 +111,8 @@ class _ThisWeekEmotionState extends State<WeekEmotion> {
 
 
               Icon icon = Icon(Icons.sentiment_very_dissatisfied, color: Colors.red);
+              Icon icon2 = Icon(Icons.sentiment_neutral, color: Colors.black);
+              Icon icon3 = Icon(Icons.sentiment_satisfied_alt_outlined, color: Colors.blue,);
 
               return Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -125,7 +127,7 @@ class _ThisWeekEmotionState extends State<WeekEmotion> {
                     style: TextStyle(fontFamily: 'Pretendard'),
                   ),
                   SizedBox(height: 15.0),
-                  icon, // 상태 아이콘 표시
+                  icon3, // 상태 아이콘 표시
                 ],
               );
             }),

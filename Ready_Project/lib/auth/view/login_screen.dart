@@ -63,7 +63,7 @@ class _LoginScreenState extends State<LoginScreen> {
               SizedBox(
                 height: 16.0,
               ),
-              ElevatedButton(
+              OutlinedButton(
                 onPressed: () async {
                   final Map<String, String> loginData = {
                     'username': username,
@@ -92,16 +92,16 @@ class _LoginScreenState extends State<LoginScreen> {
                   }
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: PRIMARY_COLOR,
+                  // backgroundColor: PRIMARY_COLOR,
                 ),
                 child: Text(
                   '로그인',
                   style: TextStyle(
-                    color: Colors.white,
+                    color: Colors.black,
                   ),
                 ),
               ),
-              TextButton(
+              OutlinedButton(
                 onPressed: ()  {
                   Navigator.of(context).push(
                     MaterialPageRoute(builder: (_) => AuthenticationScreen())
@@ -145,7 +145,7 @@ class _SubTitle extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       '이메일과 비밀번호를 입력해서 로그인 해주세요 :)',
-      style: TextStyle(fontSize: 16, color: BODY_TEXT_COLOR),
+      style: TextStyle(fontSize: 16, ),
     );
   }
 }
