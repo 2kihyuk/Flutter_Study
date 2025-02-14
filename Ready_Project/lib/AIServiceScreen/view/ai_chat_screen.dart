@@ -1,8 +1,27 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:ready_project/common/layout/default_layout.dart';
 
-class AiChatScreen extends StatelessWidget {
+import '../../common/const/data.dart';
+
+class AiChatScreen extends StatefulWidget {
   const AiChatScreen({super.key});
+
+  @override
+  State<AiChatScreen> createState() => _AiChatScreenState();
+}
+
+class _AiChatScreenState extends State<AiChatScreen> {
+
+  double monthly_expense_total = 0.0;
+  double monthly_income_total = 0.0;
+
+  @override
+  void initState() {
+    super.initState();
+    getCumulativeData();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,11 +65,12 @@ class AiChatScreen extends StatelessWidget {
             flex: 1,
             child: Padding(
               padding: EdgeInsets.all(16.0),
-              child: Row(
+              child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  _buildCircularPercent(70),
-                  _buildCircularPercent(40),
+                  Text('이번 달 누적 지출 금액 : ${NumberFormat('#,###').format(monthly_expense_total)}원'),
+                  Text('이번 달 누적 수입 금액 : ${NumberFormat('#,###').format(monthly_income_total)}원'),
+
                 ],
               ),
             ),
@@ -60,27 +80,28 @@ class AiChatScreen extends StatelessWidget {
     );
   }
 
+  Future<void> getCumulativeData()async {
+    String? token = await storage.read(key: 'JWT_TOKEN');
+    final dio = Dio();
+    try{
+      final resp =await dio.get('http://$ip/transactions/monthly-summary',
+            options: Options(
+        headers: {
+          'Authorization' : 'Bearer $token'
+        }
 
-  Widget _buildCircularPercent(int percentage) {
-    return Container(
-      height: 100,
-      width: 100,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        border: Border.all(
-          width: 8,
-          color: Colors.blueAccent,
-        ),
-      ),
-      child: Center(
-        child: Text(
-          '$percentage%',
-          style: const TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ),
-    );
+        // resp['monthly_expense_total']
+      ));
+      if(resp.statusCode == 200){
+        setState(() {
+          monthly_expense_total = resp.data['monthly_expense_total'];
+          monthly_income_total = resp.data['monthly_income_total'];
+        });
+      }else{
+        print('getCumulativeData - API 요청 실패: ${resp.statusCode}');
+      }
+    }catch(e){
+      print('에러 발생: AI_Chat_Screen - getCumulativeData -  $e');
+    }
   }
 }

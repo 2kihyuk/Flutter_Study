@@ -175,7 +175,6 @@ class _IncomeorexpenseState extends ConsumerState<Incomeorexpense> {
           daily_budget_anytime = response.data['dailyBudget'];
         });
 
-
       } else {
         print('API 요청 실패: ${response.statusCode}');
       }

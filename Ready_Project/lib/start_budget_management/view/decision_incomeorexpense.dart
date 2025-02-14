@@ -23,17 +23,20 @@ class _DecisionExpanseState extends State<DecisionIncomeorexpense> {
   String categoryItemString = "선택된 카테고리 없음";
   TextEditingController _controller = TextEditingController();
   int selectedExpanseIndex = 0; // 0: 수입, 1: 지출
+  double monthly_expense_total = 0;
   final dio = Dio();
 
   @override
   void initState() {
     super.initState();
+    getCumulativeData();
     // 텍스트 필드 초기 값 설정
     _controller.text = widget.initialAmount;
   }
 
   @override
   Widget build(BuildContext context) {
+
 
     DateTime now = DateTime.now();
     DateTime lastDayOfMonth = DateTime(now.year, now.month + 1, 0); // 이번 달 마지막 날짜
@@ -62,7 +65,7 @@ class _DecisionExpanseState extends State<DecisionIncomeorexpense> {
                 ),
               ),
               Text(
-                '$remainingDaysText / 300000원', //여기에 남은 일수와 전체예산에서 현재날짜까지 지출한 금액을 뺸 값.
+                '$remainingDaysText / ${NumberFormat('#,###').format(3000000-monthly_expense_total)}원', //3백만원 대신 month_budget.
                 style: TextStyle(
                   fontFamily: 'Pretendard',
                   fontWeight: FontWeight.w500,
@@ -272,6 +275,31 @@ class _DecisionExpanseState extends State<DecisionIncomeorexpense> {
           TextSelection.collapsed(offset: _controller.text.length - 2);
     } else {
       _controller.text = "원";
+    }
+  }
+
+  Future<void> getCumulativeData()async {
+    String? token = await storage.read(key: 'JWT_TOKEN');
+    final dio = Dio();
+    try{
+      final resp =await dio.get('http://$ip/transactions/monthly-summary',
+          options: Options(
+              headers: {
+                'Authorization' : 'Bearer $token'
+              }
+
+            // resp['monthly_expense_total']
+          ));
+      if(resp.statusCode == 200){
+        setState(() {
+          monthly_expense_total = resp.data['monthly_expense_total'];
+
+        });
+      }else{
+        print('getCumulativeData - API 요청 실패: ${resp.statusCode}');
+      }
+    }catch(e){
+      print('에러 발생: AI_Chat_Screen - getCumulativeData -  $e');
     }
   }
 }
