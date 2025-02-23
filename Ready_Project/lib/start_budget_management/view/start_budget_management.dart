@@ -8,6 +8,7 @@ import 'package:ready_project/start_budget_management/layout/start_budget_manage
 import 'package:ready_project/start_budget_management/layout/start_budget_management_middle.dart';
 import 'package:ready_project/start_budget_management/layout/start_budget_manament_top.dart';
 
+import '../../Notification/Flutter_Notification.dart';
 import '../../riverpod/budget_notifier.dart';
 
 class StartBudgetManagement extends ConsumerStatefulWidget {
@@ -24,6 +25,7 @@ class _StartBudgetManagementState extends ConsumerState<StartBudgetManagement> {
   void initState() {
     super.initState();
     _getUserData();
+
   }
 
   Future<void> _getUserData() async {

@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:flutter_timezone/flutter_timezone.dart';
+import 'package:timezone/timezone.dart' as tz;
+import 'package:timezone/data/latest.dart' as tz;
+import '../../Notification/Flutter_Notification.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -15,8 +20,32 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   @override
   void initState() {
+
+    FlutterLocalNotification.init();
+    _loadNotificationSetting();
+    // FlutterLocalNotification.init();
     super.initState();
   }
+
+  _loadNotificationSetting() async {
+    final storage = FlutterSecureStorage();
+    String? notificationsEnabled = await storage.read(key: 'notificationsEnabled');
+    print("${notificationsEnabled}");
+    setState(() {
+      _isNotificationEnabled = notificationsEnabled == 'true';
+    });
+  }
+
+  // 알림 설정을 flutter_secure_storage에 저장
+  _saveNotificationSetting(bool value) async {
+    final storage = FlutterSecureStorage();
+    await storage.write(key: 'notificationsEnabled', value: value ? 'true' : 'false');
+    if (value) {
+      FlutterLocalNotification.requestNotificationPermission();
+      FlutterLocalNotification.scheduleDailyNotification();
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -35,20 +64,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
               decoration: InputDecoration(hintText: '변경할 닉네임을 작성해주세요.'),
             ),
           ),
-          // ListTile(
-          //     title: Text('한달 총 수익 변경하기'),
-          //     subtitle: TextField(
-          //       controller: _monthBudgetController,
-          //       decoration:
-          //           InputDecoration(hintText: '현재 한 달 총 수익은 3,300,000원 입니다.'),
-          //     )),
-          // ListTile(
-          //     title: Text('한달 고정 지출액 변경하기'),
-          //     subtitle: TextField(
-          //       controller: _monthBudgetController,
-          //       decoration:
-          //           InputDecoration(hintText: '현재 한 달 고정 지출액은 300,000원 입니다.'),
-          //     )),
           SwitchListTile(
             title: Text('알림 설정'),
             value: _isNotificationEnabled,
@@ -56,10 +71,21 @@ class _SettingsScreenState extends State<SettingsScreen> {
               setState(() {
                 _isNotificationEnabled = value;
               });
+              _saveNotificationSetting(value);
             },
           ),
           ElevatedButton(
-            onPressed: () {},
+            onPressed: (){
+              FlutterLocalNotification.showNotification();
+            },
+            child: Text('알림 버튼'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+
+              // FlutterLocalNotification.scheduledNotification();
+              print("Schedule함수 호출");
+            },
             child: Text('Save Settings'),
           ),
         ],

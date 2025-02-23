@@ -5,6 +5,7 @@ import 'package:ready_project/ProfileSetting/view/setting_screen.dart';
 import 'package:ready_project/start_budget_management/view/start_budget_management.dart';
 
 import '../../Calendar/view/Calendar.dart';
+import '../../Notification/Flutter_Notification.dart';
 import '../const/colors.dart';
 import '../layout/default_layout.dart';
 
@@ -28,6 +29,7 @@ class _RootTabState extends State<RootTab> with SingleTickerProviderStateMixin {
       vsync: this,
     );
     controller.addListener(tapListener);
+
   }
 
   @override

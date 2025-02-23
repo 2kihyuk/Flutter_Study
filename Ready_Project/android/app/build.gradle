@@ -7,10 +7,12 @@ plugins {
 
 android {
     namespace = "com.example.ready_project"
-    compileSdk = flutter.compileSdkVersion
+    compileSdk 35
+//    flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
+        coreLibraryDesugaringEnabled true
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
@@ -28,10 +30,17 @@ android {
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+        multiDexEnabled true
 
-        coreLibraryDesugaringEnabled true
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+//        coreLibraryDesugaringEnabled true
+//        sourceCompatibility JavaVersion.VERSION_1_8
+//        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    dependencies {
+        coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.2.2'
+        implementation 'androidx.window:window:1.0.0'  // WindowManager 라이브러리 추가
+        implementation 'androidx.window:window-java:1.0.0'  // WindowManager
     }
 
     buildTypes {

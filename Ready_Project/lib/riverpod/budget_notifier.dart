@@ -39,26 +39,6 @@ class BudgetNotifier extends StateNotifier<BudgetModel>{
     }
   }
 
-  // Update daily budget
-  // void updateDailyBudget(double amount, bool isIncome) {
-  //   if (isIncome) {
-  //     state = BudgetModel(
-  //       month_budget: state.month_budget,
-  //       // daily_budget: state.daily_budget + amount,
-  //       daily_budget:  state.daily_budget,
-  //       daily_budget_copy: state.daily_budget_copy,
-  //
-  //     );
-  //   } else {
-  //     state = BudgetModel(
-  //       month_budget: state.month_budget,
-  //       daily_budget: state.daily_budget ,
-  //       // daily_budget: state.daily_budget - amount,
-  //       daily_budget_copy: state.daily_budget_copy,
-  //
-  //     );
-  //   }
-  // }
 }
 
 final budgetProvider  = StateNotifierProvider<BudgetNotifier,BudgetModel>(

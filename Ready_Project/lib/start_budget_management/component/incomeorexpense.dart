@@ -151,6 +151,7 @@ class Incomeorexpense extends ConsumerStatefulWidget {
 
 class _IncomeorexpenseState extends ConsumerState<Incomeorexpense> {
 
+
   double daily_budget_anytime = 0;
    // 토큰을 저장할 변수
   Future<void> getLoadData() async {
@@ -159,6 +160,7 @@ class _IncomeorexpenseState extends ConsumerState<Incomeorexpense> {
     final storage = FlutterSecureStorage();
 
     final token = await storage.read(key: JWT_TOKEN);
+
 
     try {
       final response = await dio.get(
