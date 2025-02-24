@@ -129,7 +129,6 @@ class _EditTransactionState extends State<EditTransaction> {
                       decoration: InputDecoration(
                         border: UnderlineInputBorder(),
                         floatingLabelBehavior: FloatingLabelBehavior.never,
-
                         hintText: hintTextAmount,
                         labelStyle: const TextStyle(
                           fontSize: 20,

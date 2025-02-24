@@ -96,7 +96,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 MaterialPageRoute(builder: (_) => ChangeInformation())
               );
             },
-            child: Text('내 정보 변경하기'),
+            child: Text('비밀번호 변경하기'),
           ),
           Divider(),
           Text(
@@ -105,7 +105,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
           OutlinedButton(
             onPressed: () {
-              FlutterLocalNotification.showNotification();
+              
             },
             child: Text('계정 삭제하기'),
           ),
@@ -150,14 +150,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
             },
             child: Text('로그아웃'),
           ),
-
-          // ListTile(
-          //   title: Text('닉네임 변경하기'),
-          //   subtitle: TextField(
-          //     controller: _usernameController,
-          //     decoration: InputDecoration(hintText: '변경할 닉네임을 작성해주세요.'),
-          //   ),
-          // ),
           SwitchListTile(
             title: Text('알림 설정'),
             value: _isNotificationEnabled,
