@@ -224,9 +224,15 @@ class _CloseBudgetDetailState extends ConsumerState<CloseBudgetDetail> {
       MaterialPageRoute(
         builder: (_) => EditTransaction(),
         settings: RouteSettings(
-          arguments: {'category': transaction.category , 'amount': transaction.amount , 'type': transaction.type, 'date':transaction.date},
+          arguments: {'category': transaction.category , 'amount': transaction.amount , 'type': transaction.type, 'date':transaction.date , 'id': transaction.id},
         ),
       ),
+    ).then(
+        (value){
+          if(value==true){
+            getTransactionData();
+          }
+        }
     );
   }
 
@@ -262,10 +268,15 @@ class _CloseBudgetDetailState extends ConsumerState<CloseBudgetDetail> {
         final dailyExpenseTotal = resp.data['daily_expense_total'];
         final dailyBudgetNoChanged = resp.data['daily_budget_no_change'];
 
+        print('${resp.data}');
+
+
         List<dynamic> data = resp.data['transactions']; // 데이터를 받아서
         List<Transaction> fetchedTransactions =
             data.map((json) => Transaction.fromJson(json)).toList();
-
+        for (var transaction in fetchedTransactions) {
+          print("Transaction ID: ${transaction.id}");
+        }
         // 상태 업데이트
         final dailySummary = DailySummary(
             transactions: fetchedTransactions,

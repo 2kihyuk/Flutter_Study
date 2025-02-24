@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -18,10 +19,13 @@ class _EditTransactionState extends State<EditTransaction> {
   late String category;
   late int index;
   late String date;
+  late int id;
   late String categoryItemString = "카테고리를 선택하세요.";
   int selectedExpanseIndex = 0; // 0: 수입, 1: 지출
   late TextEditingController _amountController = TextEditingController();
   String hintTextAmount = "";
+
+  List<bool> selectedStates = [true, false]; // 초기값: 수입 선택 상태
 
   @override
   void didChangeDependencies() {
@@ -40,7 +44,8 @@ class _EditTransactionState extends State<EditTransaction> {
       amount = args['amount'];
       type = args['type'];
       date = args['date'].toString();
-      print('didChange - ${category}, ${amount} , ${type} , ${date}');
+      id = args['id'];
+      print('didChange - ${category}, ${amount} , ${type} , ${date} , ${id}');
 
     } else {
       // 만약 arguments가 null이라면 기본값을 할당하거나 예외 처리
@@ -53,7 +58,11 @@ class _EditTransactionState extends State<EditTransaction> {
     hintTextAmount =
     "수정할 금액을 입력하세요. 수정 전 금액은 ${NumberFormat('#,###').format(amount)}원 입니다.";
     // 금액의 기호 초기화 (수입/지출에 따라 기호 변경)
-    selectedExpanseIndex = type == '수입' ? 0 : 1;
+    // selectedExpanseIndex = type == '수입' ? 0 : 1;
+    selectedStates = [
+      selectedExpanseIndex == 0,
+      selectedExpanseIndex == 1,
+    ];
   }
 
   @override
@@ -183,11 +192,16 @@ class _EditTransactionState extends State<EditTransaction> {
                       );
 
                       if (selectedCategoryItem != null) {
-                        setState(() {
-                          categoryItemString = selectedCategoryItem['label']!;
-                          print(
-                              "Selected Category: ${categoryItemString}"); // 디버그용 출력
-                        });
+                        String newCategory = selectedCategoryItem['label']!;
+                        if (newCategory != categoryItemString) {
+                          setState(() {
+                            categoryItemString = newCategory;
+                          });
+                        }
+                        // setState(() {
+                        //   categoryItemString = selectedCategoryItem['label']!;
+                        //
+                        // });
                       }
                     },
                     icon: const Icon(Icons.u_turn_right_outlined),
@@ -209,13 +223,6 @@ class _EditTransactionState extends State<EditTransaction> {
                   String transactionType =
                   selectedExpanseIndex == 0 ? "수입" : "지출";
 
-                  Transaction beforeTransaction = Transaction(
-                    amount: amount,
-                    category: category,
-                    type: type,
-                    date: dateValue,
-                  );
-                  print('before - ${beforeTransaction.category} / ${beforeTransaction.amount} / ${beforeTransaction.type} / ${beforeTransaction.date}');
 
                   // `Transaction` 객체 생성
                   Transaction afterTransaction = Transaction(
@@ -230,55 +237,54 @@ class _EditTransactionState extends State<EditTransaction> {
                   // `Transaction` 객체를 JSON으로 변환
                   Map<String, dynamic> AfterEditTransactionJson = afterTransaction.toJson();
 
-                  Map<String, dynamic> BeforeEditTransactionJson = beforeTransaction.toJson();
+                  // Map<String, dynamic> BeforeEditTransactionJson = beforeTransaction.toJson();
 
                   ///이제 여기서 수정 전 , 수정 후 트랜잭션 데이터를 올리면 됨.
-
-                  // try{
-                  //   final resp = await dio.post(
-                  //       'http://$ip/transactions',
-                  //       options: Options(
-                  //           headers: {
-                  //             'Content-Type': 'application/json',
-                  //             'Authorization' : 'Bearer $token',
-                  //           }
-                  //       ),
-                  //       data: transactionJson
-                  //   );
-                  //   if(resp.statusCode==200){
-                  //     // await ref.read(budgetProvider.notifier).getDailyBudgetAnytime(token!);
-                  //     Navigator.pop(context, _controller.text);
-                  //     print('DecisionIncomeOrExpense에서 Transaction데이터를 서버에 성공적으로 전송');
-                  //   }else{
-                  //     print('DecisionIncomeOrExpense에서 Transaction데이터를 서버에 전송하는데 실패함');
-                  //   }
-                  // }catch(e) {
-                  //   print('DecisionIncomeOrExpense Try-Catch Error : $e');
-                  //   if (e is DioError) {
-                  //     // DioErrorType을 체크하여 오류 종류를 파악
-                  //     switch (e.type) {
-                  //       case DioErrorType.connectTimeout:
-                  //         print('Connection timeout');
-                  //         break;
-                  //       case DioErrorType.sendTimeout:
-                  //         print('Send timeout');
-                  //         break;
-                  //       case DioErrorType.receiveTimeout:
-                  //         print('Receive timeout');
-                  //         break;
-                  //       case DioErrorType.response:
-                  //       // 서버 응답을 받았지만 에러 상태 코드가 반환됨
-                  //         print('Error response: ${e.response}');
-                  //         break;
-                  //       case DioErrorType.cancel:
-                  //         print('Request cancelled');
-                  //         break;
-                  //       case DioErrorType.other:
-                  //         print('Other error: ${e.message}');
-                  //         break;
-                  //     }
-                  //   }
-                  // }
+                  final dio = Dio();
+                  try{
+                    final resp = await dio.patch(
+                        'http://$ip/transactions/update/${id}',
+                        options: Options(
+                            headers: {
+                              'Content-Type': 'application/json',
+                              'Authorization' : 'Bearer $token',
+                            }
+                        ),
+                        data: AfterEditTransactionJson
+                    );
+                    if(resp.statusCode==200){
+                      Navigator.pop(context,true);
+                      print('DecisionIncomeOrExpense에서 Transaction데이터를 서버에 성공적으로 전송');
+                    }else{
+                      print('DecisionIncomeOrExpense에서 Transaction데이터를 서버에 전송하는데 실패함');
+                    }
+                  }catch(e) {
+                    print('DecisionIncomeOrExpense Try-Catch Error : $e');
+                    if (e is DioError) {
+                      // DioErrorType을 체크하여 오류 종류를 파악
+                      switch (e.type) {
+                        case DioErrorType.connectTimeout:
+                          print('Connection timeout');
+                          break;
+                        case DioErrorType.sendTimeout:
+                          print('Send timeout');
+                          break;
+                        case DioErrorType.receiveTimeout:
+                          print('Receive timeout');
+                          break;
+                        case DioErrorType.response:
+                        // 서버 응답을 받았지만 에러 상태 코드가 반환됨
+                          print('Error response: ${e.response}');
+                          break;
+                        case DioErrorType.cancel:
+                          print('Request cancelled');
+                          break;
+                        case DioErrorType.other:
+                          print('Other error: ${e.message}');
+                          break;
+                      }
+                    }
+                  }
                 },
                 child: Text(
                   '수정',

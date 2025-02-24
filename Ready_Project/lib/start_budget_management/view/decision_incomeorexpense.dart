@@ -32,6 +32,7 @@ class _DecisionExpanseState extends ConsumerState<DecisionIncomeorexpense> {
   final dio = Dio();
   bool OpenSafeBox = false;
   bool isSafeBoxPossible = false;
+  String selectedOption = 'A';
 
   @override
   void initState() {
@@ -45,9 +46,8 @@ class _DecisionExpanseState extends ConsumerState<DecisionIncomeorexpense> {
   Widget build(BuildContext context) {
     final budget = ref.watch(budgetProvider);
     final safeBox = ref.watch(safeBoxProvider);
-    double enteredAmount = double.tryParse(widget
-        .initialAmount
-        .replaceAll(RegExp(r'[^0-9]'), '')) ??
+    double enteredAmount = double.tryParse(
+            widget.initialAmount.replaceAll(RegExp(r'[^0-9]'), '')) ??
         0.0;
 
     if (safeBox > 0) {
@@ -63,6 +63,7 @@ class _DecisionExpanseState extends ConsumerState<DecisionIncomeorexpense> {
 
     // 남은 일수를 "D-15" 형식으로 출력
     String remainingDaysText = "D-$remainingDays";
+
 
     return Scaffold(
       appBar: AppBar(),
@@ -223,24 +224,46 @@ class _DecisionExpanseState extends ConsumerState<DecisionIncomeorexpense> {
                           ),
                           Text(
                               '세이프 박스 : ${NumberFormat('#,###').format(safeBox)}원'),
+                          Text('지출하려는 금액 : ${widget.initialAmount}원'),
+                          Text(
+                              '오늘 하루 잔여 예산 : ${NumberFormat('#,###').format(budget.daily_budget)}원'),
+                          Text(
+                              '초과되는 금액 : ${NumberFormat('#,###').format(budget.daily_budget - enteredAmount)}원 '),
                           // 추가로 SafeBox에서 꺼낼 금액을 설정하거나 버튼을 넣을 수 있음
                         ],
                       ),
                     ),
-                    Container(
-
-                      padding: EdgeInsets.all(16),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          Text('지출하려는 금액 : ${widget.initialAmount}원'),
-                          Text('오늘 하루 잔여 예산 : ${NumberFormat('#,###').format(budget.daily_budget)}원'),
-                          Text('초과되는 금액 : ${ NumberFormat('#,###').format(budget.daily_budget - enteredAmount)}원 '),
-                          SizedBox(height: 16.0,),
-                          Text('1번 : ${NumberFormat('#,###').format(budget.daily_budget)}원 을 모두 사용하고 ${ NumberFormat('#,###').format(budget.daily_budget - enteredAmount)}원을 세이프 박스에서 사용할까요? '),
-                          Text('2번 : 세이프 박스 금액은 사용하지 않고 오늘 하루 잔여 예산을 초과하여 지출하시겠습니까?'),
-                        ],
-                      ),
+                    Column(
+                      children: [
+                        RadioListTile<String>(
+                          title: Text(
+                              '${NumberFormat('#,###').format(budget.daily_budget)}원 을 모두 사용하고 ${NumberFormat('#,###').format(budget.daily_budget - enteredAmount)}원을 세이프 박스에서 사용할까요?'),
+                          value: 'A',
+                          groupValue: selectedOption,
+                          onChanged: (String? value) {
+                            setState(() {
+                              selectedOption = value!;
+                            });
+                          },
+                        ),
+                        RadioListTile<String>(
+                          title: Text(
+                              '세이프 박스 금액은 사용하지 않고 오늘 하루 잔여 예산을 초과하여 지출하시겠습니까?'),
+                          value: 'B',
+                          groupValue: selectedOption,
+                          onChanged: (String? value) {
+                            setState(() {
+                              selectedOption = value!;
+                            });
+                          },
+                        ),
+                        SizedBox(height: 20),
+                        Text(
+                          '선택된 옵션: $selectedOption',
+                          style: TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.bold),
+                        ),
+                      ],
                     ),
                   ],
                 ),
