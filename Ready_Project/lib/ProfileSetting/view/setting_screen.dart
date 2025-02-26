@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:ready_project/ProfileSetting/view/change_information.dart';
+import 'package:ready_project/auth/view/login_screen.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz;
 import '../../Notification/Flutter_Notification.dart';
@@ -22,6 +23,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   String birthDate = "";
   TextEditingController _usernameController = TextEditingController();
 
+
   // TextEditingController _monthBudgetController = TextEditingController();
 
   @override
@@ -35,7 +37,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   _loadNotificationSetting() async {
     final storage = FlutterSecureStorage();
     String? notificationsEnabled =
-        await storage.read(key: 'notificationsEnabled');
+    await storage.read(key: 'notificationsEnabled');
     print("${notificationsEnabled}");
     setState(() {
       _isNotificationEnabled = notificationsEnabled == 'true';
@@ -93,7 +95,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           OutlinedButton(
             onPressed: () {
               Navigator.of(context).push(
-                MaterialPageRoute(builder: (_) => ChangeInformation())
+                  MaterialPageRoute(builder: (_) => ChangeInformation())
               );
             },
             child: Text('비밀번호 변경하기'),
@@ -105,7 +107,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
           OutlinedButton(
             onPressed: () {
-              
+
             },
             child: Text('계정 삭제하기'),
           ),
@@ -145,8 +147,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
 
           TextButton(
-            onPressed: (){
-              
+            onPressed: () {
+              LogOut();
             },
             child: Text('로그아웃'),
           ),
@@ -166,17 +168,38 @@ class _SettingsScreenState extends State<SettingsScreen> {
             },
             child: Text('알림 버튼'),
           ),
-          // ElevatedButton(
-          //   onPressed: () {
-          //
-          //     // FlutterLocalNotification.scheduledNotification();
-          //     print("Schedule함수 호출");
-          //   },
-          //   child: Text('Save Settings'),
-          // ),
+
         ],
       ),
     );
+  }
+
+  Future<void> LogOut() async {
+    final dio = Dio();
+    final storage = FlutterSecureStorage();
+
+    final token = await storage.read(key: JWT_TOKEN);
+
+    try {
+      final response = await dio.post(
+        'http://$ip/auth/logout',
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $token',
+          },
+        ),
+      );
+      if (response.statusCode == 200) {
+        print("SettingScreen : LogOut : ${response.data}");
+        Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (_) => LoginScreen()),
+                (route) => false);
+      } else {
+        print('API 요청 실패: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('에러 발생: SettingScreen - LogOut -  $e');
+    }
   }
 
   Future<void> getLoadData() async {

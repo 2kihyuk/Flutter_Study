@@ -202,7 +202,7 @@ class _CloseBudgetDetailState extends ConsumerState<CloseBudgetDetail> {
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop(); // 다이얼로그 닫기
-                _deleteTransaction(index); // 삭제 로직 실행
+                _deleteTransaction(transaction , index); // 삭제 로직 실행
               },
               child: const Text("삭제"),
             ),
@@ -236,8 +236,31 @@ class _CloseBudgetDetailState extends ConsumerState<CloseBudgetDetail> {
     );
   }
 
-  void _deleteTransaction(int index) {
-    //트랜잭션 데이터 삭제 api요청.
+  Future<void> _deleteTransaction(Transaction transaction , int index) async {
+    final dio = Dio();
+    final storage = FlutterSecureStorage();
+
+    final token = await storage.read(key: JWT_TOKEN);
+
+    try {
+      final response = await dio.delete(
+        'http://$ip/transactions/delete/${transaction.id}',
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $token',
+          },
+        ),
+      );
+      if (response.statusCode == 200) {
+        print("CloseBudgetDetail : _deleteTransaction : ${response.data}");
+        getTransactionData();
+
+      } else {
+        print('API 요청 실패: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('에러 발생: CloaseBudgetDetail - _deleteTransaction -  $e');
+    }
   }
 
   String getCategoryImage(String categoryLabel) {

@@ -128,9 +128,6 @@ class _AiChatScreenState extends State<AiChatScreen> {
           monthly_expense_total = summary.monthly_expense_total;
           monthly_income_total = summary.monthly_income_total;
           categoryExpenses = summary.category_expenses;
-          //
-          // monthly_expense_total = resp.data['monthly_expense_total'];
-          // monthly_income_total = resp.data['monthly_income_total'];
         });
       } else {
         print('getCumulativeData - API 요청 실패: ${resp.statusCode}');
