@@ -50,7 +50,7 @@ class _DecisionExpanseState extends ConsumerState<DecisionIncomeorexpense> {
             widget.initialAmount.replaceAll(RegExp(r'[^0-9]'), '')) ??
         0.0;
 
-    if (safeBox > 0) {
+    if (safeBox > ((budget.daily_budget - enteredAmount).abs())) {
       isSafeBoxPossible = true;
     }
 

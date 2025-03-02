@@ -25,6 +25,12 @@ class _CalendarState extends State<Calendar> {
       "${DateTime.now().toUtc().year}년 ${DateTime.now().toUtc().month}월 ${DateTime.now().toUtc().day}일";
 
   @override
+  void initState() {
+
+    getTransactionToday(DateTime.now());
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
@@ -212,6 +218,33 @@ class _CalendarState extends State<Calendar> {
           setState(() {
             transactions = fetchedTransactions;
           });
+      }
+
+    } catch (e) {
+      print('Calendar Try-Catch Error : $e');
+    }
+  }
+  Future<void> getTransactionToday(DateTime selectedDate) async {
+    final dio = Dio();
+    final token = await storage.read(key: JWT_TOKEN);
+    try {
+
+      final resp = await dio.get(
+        'http://$ip/transactions/daily?date=${DateFormat('yyyy-MM-dd').format(_selectedDay)}',
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $token',
+          },
+        ),
+      );
+      if(resp.statusCode==200){
+        List<dynamic>data = resp.data['transactions'];
+        List<Transaction> fetchedTransactions =
+        data.map((json) => Transaction.fromJson(json)).toList();
+
+        setState(() {
+          transactions = fetchedTransactions;
+        });
       }
 
     } catch (e) {
