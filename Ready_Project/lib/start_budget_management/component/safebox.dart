@@ -26,7 +26,7 @@ class _SafeboxState extends ConsumerState<Safebox> {
 
   @override
   Widget build(BuildContext context) {
-    final safeBox = ref.read(safeBoxProvider);
+    final safeBox = ref.watch(safeBoxProvider);
     return Container(
       padding: EdgeInsets.all(20),
       margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),

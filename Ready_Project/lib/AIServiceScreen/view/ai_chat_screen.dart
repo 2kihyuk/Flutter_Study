@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:ready_project/AIServiceScreen/view/pie_chart_sample3.dart';
 import 'package:ready_project/common/layout/default_layout.dart';
 
 import '../../common/const/data.dart';
@@ -18,9 +19,10 @@ class _AiChatScreenState extends State<AiChatScreen> {
   double monthly_expense_total = 0.0;
   double monthly_income_total = 0.0;
   Map<String, double> categoryExpenses = {};
+  bool isThisMonth = true;
 
   int touchedIndex = -1;
-
+  int selectedIndex = 1;
   @override
   void initState() {
     super.initState();
@@ -29,6 +31,7 @@ class _AiChatScreenState extends State<AiChatScreen> {
 
   @override
   Widget build(BuildContext context) {
+
     return DefaultLayout(
       title: 'AI 서비스',
       child: SingleChildScrollView(
@@ -67,13 +70,38 @@ class _AiChatScreenState extends State<AiChatScreen> {
             ),
             Divider(),
             // 카테고리별 지출 내역
+            Center(
+              child: ToggleButtons(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 30),
+                    child: Text("지난 달 카테고리 별 지출"),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 30),
+                    child: Text("이번 달 카테고리 별 지출"),
+                  ),
+                ],
+                isSelected: [selectedIndex == 0, selectedIndex == 1], // 선택된 인덱스에 따라 색상 변경
+                onPressed: (int index) {
+                  setState(() {
+                    selectedIndex = index;
+                  });
+                },
+                color: Colors.black,  // 비선택 시 색상
+                selectedColor: Colors.white,  // 선택 시 색상
+                fillColor: Colors.blue,  // 선택된 버튼 배경 색상
+                borderRadius: BorderRadius.circular(8),
+              ),
+            ),
+            if(selectedIndex == 1)
             Padding(
               padding: EdgeInsets.all(16.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    '카테고리별 지출 내역',
+                    '이번 달 카테고리별 지출 내역',
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                   SizedBox(height: 10),
@@ -83,15 +111,48 @@ class _AiChatScreenState extends State<AiChatScreen> {
                     children: categoryExpenses.entries.map((entry) {
                       return ListTile(
                         title: Text(entry.key),
-                        trailing: Text('${NumberFormat('#,###').format(entry.value)} 원'),
+                        trailing: Text(
+                            '${NumberFormat('#,###').format(entry.value)} 원'),
                       );
                     }).toList(),
                   ),
                 ],
               ),
             ),
+            if(selectedIndex == 0)
+              Padding(
+                padding: EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '지난 달 카테고리별 지출 내역',
+                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(height: 10),
+                    ListView(
+                      physics: NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      children: categoryExpenses.entries.map((entry) {
+                        return ListTile(
+                          title: Text(entry.key),
+                          trailing: Text(
+                              '${NumberFormat('#,###').format(entry.value)} 원'),
+                        );
+                      }).toList(),
+                    ),
+                  ],
+                ),
+              ),
+            PieChartSample3(
+              monthly_expense_total: monthly_expense_total,
+              categoryExpenses: categoryExpenses,
+            ),
+
+
             Divider(),
             // 누적 지출 및 수입
+            if(selectedIndex == 1)
             Padding(
               padding: EdgeInsets.all(16.0),
               child: Column(
@@ -108,12 +169,28 @@ class _AiChatScreenState extends State<AiChatScreen> {
                 ],
               ),
             ),
+            if(selectedIndex == 0)
+              Padding(
+                padding: EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '지난 달 누적 지출 금액 : ${NumberFormat('#,###').format(monthly_expense_total)}원',
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                    Text(
+                      '지난 달 누적 수입 금액 : ${NumberFormat('#,###').format(monthly_income_total)}원',
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
+              ),
           ],
         ),
       ),
     );
   }
-
 
   Future<void> getCumulativeData() async {
     String? token = await storage.read(key: 'JWT_TOKEN');

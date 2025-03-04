@@ -24,33 +24,11 @@ class _IncomeorexpenseState extends ConsumerState<Incomeorexpense> {
    // 토큰을 저장할 변수
   Future<void> getLoadData() async {
 
-    final dio = Dio();
     final storage = FlutterSecureStorage();
 
     final token = await storage.read(key: JWT_TOKEN);
+    await ref.read(budgetProvider.notifier).getLoadData(token!);
 
-
-    try {
-      final response = await dio.get(
-        'http://$ip/user-info',
-        options: Options(
-          headers: {
-            'Authorization': 'Bearer $token',
-          },
-        ),
-      );
-      if (response.statusCode == 200) {
-        print("IncomeOrExpense : GetLoadData : ${response.data}");
-        setState(() {
-          daily_budget_anytime = response.data['dailyBudget'];
-        });
-
-      } else {
-        print('API 요청 실패: ${response.statusCode}');
-      }
-    } catch (e) {
-      print('에러 발생: IncomeOrExpense - getLoadData -  $e');
-    }
   }
 
   @override
@@ -58,11 +36,7 @@ class _IncomeorexpenseState extends ConsumerState<Incomeorexpense> {
     super.initState();
     getLoadData();  // IncomeorExpense 위젯이 나타날 때마다 호출
   }
-  @override
-  void didUpdateWidget(covariant Incomeorexpense oldWidget) {
-    getLoadData();
-    super.didUpdateWidget(oldWidget);
-  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -109,7 +83,7 @@ class _IncomeorexpenseState extends ConsumerState<Incomeorexpense> {
 
           // 하루 예산 텍스트
           Text(
-            '오늘 하루 예산은 ${NumberFormat("#,###").format(daily_budget_anytime)}원',
+            '오늘 하루 예산은 ${NumberFormat("#,###").format(budget.daily_budget)}원',
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w500,
