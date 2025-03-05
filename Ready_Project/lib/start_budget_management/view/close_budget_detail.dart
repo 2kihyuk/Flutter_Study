@@ -27,6 +27,7 @@ class _CloseBudgetDetailState extends ConsumerState<CloseBudgetDetail> {
     getTransactionData();
   }
 
+
   List<Transaction> transactions = [];
   double dailyExpenseTotal = 0.0;
   double dailyIncomeTotal = 0.0;
@@ -34,10 +35,11 @@ class _CloseBudgetDetailState extends ConsumerState<CloseBudgetDetail> {
   // @override
   @override
   Widget build(BuildContext context) {
-    final budget = ref.watch(budgetProvider);
     final dailySummary = ref.watch(dailySummaryProvider);
+    final budget = ref.watch(budgetProvider);
 
     return DefaultLayout(
+
       title: '',
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -113,7 +115,7 @@ class _CloseBudgetDetailState extends ConsumerState<CloseBudgetDetail> {
                     print('Tapped on item at index: $index');
                     print(
                         '${transaction.amount} / ${transaction.category} / ${transaction.type} / ${transaction.date}');
-                    showOptionDialog(context, transaction, index);
+                    showOptionDialog(context, transaction, index,);
                   },
                   child: Container(
                     padding: EdgeInsets.all(16.0),
@@ -166,25 +168,13 @@ class _CloseBudgetDetailState extends ConsumerState<CloseBudgetDetail> {
               },
             ),
           ),
-
-          // Align(
-          //   alignment: Alignment.center,
-          //   child: ElevatedButton(
-          //     onPressed: (){
-          //       ///여기에는 트랜잭션 데이터를 저장하고 마감하고, budget값들을 초기화 시키는 작업이 필요함. 하루의 지출계획이 더이상 없다. 수입계획이 더이상 없다 할때 , 지출을 마감할때 쓰는 곳.
-          //       ///이 작업이 12시 지나서도 자동으로 행해지는것이 가능한가?
-          //       ///여기서 오늘 하루 잔예 총 예산을 post로 쏴줘야함.
-          //     },
-          //     child: Text('저장'),
-          //   ),
-          // ),
         ],
       ),
     );
   }
 
   void showOptionDialog(
-      BuildContext context, Transaction transaction, int index) {
+      BuildContext context, Transaction transaction, int index , ) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -196,6 +186,7 @@ class _CloseBudgetDetailState extends ConsumerState<CloseBudgetDetail> {
               onPressed: () {
                 Navigator.of(context).pop(); // 다이얼로그 닫기
                 _editTransaction(transaction, index); // 수정 로직 실행
+
               },
               child: const Text("수정"),
             ),
@@ -203,6 +194,7 @@ class _CloseBudgetDetailState extends ConsumerState<CloseBudgetDetail> {
               onPressed: () {
                 Navigator.of(context).pop(); // 다이얼로그 닫기
                 _deleteTransaction(transaction , index); // 삭제 로직 실행
+
               },
               child: const Text("삭제"),
             ),

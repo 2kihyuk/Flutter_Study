@@ -23,6 +23,7 @@ class _AiChatScreenState extends State<AiChatScreen> {
 
   int touchedIndex = -1;
   int selectedIndex = 1;
+
   @override
   void initState() {
     super.initState();
@@ -31,7 +32,6 @@ class _AiChatScreenState extends State<AiChatScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     return DefaultLayout(
       title: 'AI 서비스',
       child: SingleChildScrollView(
@@ -68,7 +68,8 @@ class _AiChatScreenState extends State<AiChatScreen> {
                 ],
               ),
             ),
-            Divider(),
+
+
             // 카테고리별 지출 내역
             Center(
               child: ToggleButtons(
@@ -82,44 +83,49 @@ class _AiChatScreenState extends State<AiChatScreen> {
                     child: Text("이번 달 카테고리 별 지출"),
                   ),
                 ],
-                isSelected: [selectedIndex == 0, selectedIndex == 1], // 선택된 인덱스에 따라 색상 변경
+                isSelected: [selectedIndex == 0, selectedIndex == 1],
+                // 선택된 인덱스에 따라 색상 변경
                 onPressed: (int index) {
                   setState(() {
                     selectedIndex = index;
                   });
                 },
-                color: Colors.black,  // 비선택 시 색상
-                selectedColor: Colors.white,  // 선택 시 색상
-                fillColor: Colors.blue,  // 선택된 버튼 배경 색상
+                color: Colors.black,
+                // 비선택 시 색상
+                selectedColor: Colors.white,
+                // 선택 시 색상
+                fillColor: Colors.blue,
+                // 선택된 버튼 배경 색상
                 borderRadius: BorderRadius.circular(8),
               ),
             ),
-            if(selectedIndex == 1)
-            Padding(
-              padding: EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    '이번 달 카테고리별 지출 내역',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(height: 10),
-                  ListView(
-                    physics: NeverScrollableScrollPhysics(),
-                    shrinkWrap: true,
-                    children: categoryExpenses.entries.map((entry) {
-                      return ListTile(
-                        title: Text(entry.key),
-                        trailing: Text(
-                            '${NumberFormat('#,###').format(entry.value)} 원'),
-                      );
-                    }).toList(),
-                  ),
-                ],
+            if (selectedIndex == 1)
+              Padding(
+                padding: EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '이번 달 카테고리별 지출 내역',
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(height: 10),
+                    ListView(
+                      physics: NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      children: categoryExpenses.entries.map((entry) {
+                        return ListTile(
+                          title: Text(entry.key),
+                          trailing: Text(
+                              '${NumberFormat('#,###').format(entry.value)} 원'),
+                        );
+                      }).toList(),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            if(selectedIndex == 0)
+            if (selectedIndex == 0)
               Padding(
                 padding: EdgeInsets.all(16.0),
                 child: Column(
@@ -127,7 +133,8 @@ class _AiChatScreenState extends State<AiChatScreen> {
                   children: [
                     Text(
                       '지난 달 카테고리별 지출 내역',
-                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     ),
                     SizedBox(height: 10),
                     ListView(
@@ -149,27 +156,28 @@ class _AiChatScreenState extends State<AiChatScreen> {
               categoryExpenses: categoryExpenses,
             ),
 
-
             Divider(),
             // 누적 지출 및 수입
-            if(selectedIndex == 1)
-            Padding(
-              padding: EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    '이번 달 누적 지출 금액 : ${NumberFormat('#,###').format(monthly_expense_total)}원',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                  Text(
-                    '이번 달 누적 수입 금액 : ${NumberFormat('#,###').format(monthly_income_total)}원',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                ],
+            if (selectedIndex == 1)
+              Padding(
+                padding: EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '이번 달 누적 지출 금액 : ${NumberFormat('#,###').format(monthly_expense_total)}원',
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                    Text(
+                      '이번 달 누적 수입 금액 : ${NumberFormat('#,###').format(monthly_income_total)}원',
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            if(selectedIndex == 0)
+            if (selectedIndex == 0)
               Padding(
                 padding: EdgeInsets.all(16.0),
                 child: Column(
@@ -177,11 +185,13 @@ class _AiChatScreenState extends State<AiChatScreen> {
                   children: [
                     Text(
                       '지난 달 누적 지출 금액 : ${NumberFormat('#,###').format(monthly_expense_total)}원',
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                     Text(
                       '지난 달 누적 수입 금액 : ${NumberFormat('#,###').format(monthly_income_total)}원',
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                   ],
                 ),
@@ -199,6 +209,8 @@ class _AiChatScreenState extends State<AiChatScreen> {
       final resp = await dio.get('http://$ip/transactions/monthly-summary',
           options: Options(headers: {'Authorization': 'Bearer $token'}));
       if (resp.statusCode == 200) {
+
+        print('AI_CHAT_SCREEN - ${resp.data}');
         TotalModel summary = TotalModel.fromJson(resp.data);
 
         setState(() {

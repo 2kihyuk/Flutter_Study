@@ -1,11 +1,32 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:ready_project/start_budget_management/view/close_budget_detail.dart';
 
-class CloseBudget extends StatelessWidget {
+import '../../common/const/data.dart';
+import '../../riverpod/budget_notifier.dart';
+
+class CloseBudget extends ConsumerStatefulWidget {
   const CloseBudget({super.key});
 
   @override
+  ConsumerState<CloseBudget> createState() => _CloseBudgetState();
+}
+
+class _CloseBudgetState extends ConsumerState<CloseBudget> {
+
+  Future<void> getLoadData() async {
+    final storage = FlutterSecureStorage();
+
+    final token = await storage.read(key: JWT_TOKEN);
+    await ref.watch(budgetProvider.notifier).getLoadData(token!);
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final budget = ref.watch(budgetProvider); // 상태 구독
     return Container(
       padding: EdgeInsets.all(10),
       margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
@@ -53,9 +74,9 @@ class CloseBudget extends StatelessWidget {
                 ),
               ),
               IconButton(
-                onPressed: (){
+                onPressed: () {
                   Navigator.of(context).push(
-                    MaterialPageRoute(builder: (_)=> CloseBudgetDetail())
+                      MaterialPageRoute(builder: (_) => CloseBudgetDetail())
                   );
                 },
                 icon: Icon(Icons.arrow_right_alt),

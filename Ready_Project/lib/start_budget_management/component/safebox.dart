@@ -18,10 +18,10 @@ class _SafeboxState extends ConsumerState<Safebox> {
 
   @override
   void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(safeBoxProvider.notifier).fetchSafeBoxData();
-    });
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.watch(safeBoxProvider.notifier).fetchSafeBoxData();
+    });
   }
 
   @override

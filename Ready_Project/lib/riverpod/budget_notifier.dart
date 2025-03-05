@@ -9,10 +9,6 @@ class BudgetNotifier extends StateNotifier<BudgetModel>{
 
 
   Future<void> getLoadData(String token) async {
-    // 확인: 이 함수가 이미 호출되었는지
-    // final hasLoaded = await storage.read(key: 'hasLoaded');
-
-    // if (hasLoaded == 'true') return;  // 이미 실행되었으면 실행하지 않음
 
     final dio = Dio();
 
@@ -29,8 +25,6 @@ class BudgetNotifier extends StateNotifier<BudgetModel>{
         print("BudgetNotifier : GetLoadData : ${response.data}");
         state = BudgetModel.fromJson(response.data); // 상태 업데이트
 
-        // 실행된 후 'hasLoaded' 값 저장
-        // await storage.write(key: 'hasLoaded', value: 'true');
       } else {
         print('API 요청 실패: ${response.statusCode}');
       }

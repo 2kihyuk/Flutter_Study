@@ -19,6 +19,7 @@ class DefaultLayout extends StatelessWidget {
   }
 
   AppBar? renderAppBar() {
+
     if (title == null) {
       return null;
     } else {

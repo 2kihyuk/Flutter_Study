@@ -31,7 +31,7 @@ class _StartBudgetManagementState extends ConsumerState<StartBudgetManagement> {
   Future<void> _getUserData() async {
     final token = await FlutterSecureStorage().read(key: JWT_TOKEN);
     if (token != null) {
-      ref.read(budgetProvider.notifier).getLoadData(token); // 상태 업데이트
+      ref.watch(budgetProvider.notifier).getLoadData(token); // 상태 업데이트
     }
   }
 

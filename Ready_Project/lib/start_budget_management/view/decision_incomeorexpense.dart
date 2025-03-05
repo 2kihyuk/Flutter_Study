@@ -32,7 +32,7 @@ class _DecisionExpanseState extends ConsumerState<DecisionIncomeorexpense> {
   final dio = Dio();
   bool OpenSafeBox = false;
   bool isSafeBoxPossible = false;
-  String selectedOption = 'A';
+  String selectedOption = "";
 
   @override
   void initState() {
@@ -82,7 +82,7 @@ class _DecisionExpanseState extends ConsumerState<DecisionIncomeorexpense> {
                 ),
               ),
               Text(
-                '$remainingDaysText / ${NumberFormat('#,###').format(3000000 - monthly_expense_total)}원', //3백만원 대신 month_budget.
+                '$remainingDaysText / ${NumberFormat('#,###').format(budget.month_budget - monthly_expense_total)}원', //3백만원 대신 month_budget.
                 style: TextStyle(
                   fontFamily: 'Pretendard',
                   fontWeight: FontWeight.w500,
@@ -271,9 +271,11 @@ class _DecisionExpanseState extends ConsumerState<DecisionIncomeorexpense> {
               ElevatedButton(
                 onPressed: () async {
                   if(selectedOption == 'A'){
-                    postTransaction(true);
+                    postSafeBoxTransaction();
                   }else if(selectedOption == 'B'){
-                    postTransaction(false);
+                    postNoSafeBoxTransaction(false);
+                  }else{
+                    postTransaction();
                   }
                 },
                 child: Text(
@@ -334,7 +336,7 @@ class _DecisionExpanseState extends ConsumerState<DecisionIncomeorexpense> {
     }
   }
 
-  Future<void> postTransaction(bool isSafe) async{
+  Future<void> postTransaction() async{
     final token = await storage.read(key: JWT_TOKEN);
     String amount = _controller.text
         .replaceAll(RegExp(r'[^0-9]'), ''); // 입력한 금액에서 숫자만 추출
@@ -354,7 +356,7 @@ class _DecisionExpanseState extends ConsumerState<DecisionIncomeorexpense> {
     Map<String, dynamic> transactionJson = transaction.toJson();
 
     try {
-      final resp = await dio.post('http://$ip/transactions?useSafeBox=${isSafe}',
+      final resp = await dio.post('http://$ip/transactions/use-safe-box',
           options: Options(headers: {
             'Content-Type': 'application/json',
             'Authorization': 'Bearer $token',
@@ -398,6 +400,135 @@ class _DecisionExpanseState extends ConsumerState<DecisionIncomeorexpense> {
     }
   }
 
+
+  Future<void> postSafeBoxTransaction() async{
+    final token = await storage.read(key: JWT_TOKEN);
+    String amount = _controller.text
+        .replaceAll(RegExp(r'[^0-9]'), ''); // 입력한 금액에서 숫자만 추출
+    double amountValue = double.tryParse(amount) ?? 0.0;
+    String transactionType =
+    selectedExpanseIndex == 0 ? "수입" : "지출";
+
+    // `Transaction` 객체 생성
+    Transaction transaction = Transaction(
+      amount: amountValue,
+      category: categoryItemString,
+      type: transactionType,
+      date: DateTime.now(), // 현재 날짜
+    );
+
+    // `Transaction` 객체를 JSON으로 변환
+    Map<String, dynamic> transactionJson = transaction.toJson();
+
+    try {
+      final resp = await dio.post('http://$ip/transactions/use-safe-box',
+          options: Options(headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token',
+          }),
+          data: transactionJson);
+      if (resp.statusCode == 200) {
+        // await ref.read(budgetProvider.notifier).getDailyBudgetAnytime(token!);
+        Navigator.pop(context, _controller.text);
+        print(
+            'DecisionIncomeOrExpense에서 Transaction데이터를 서버에 성공적으로 전송');
+      } else {
+        print(
+            'DecisionIncomeOrExpense에서 Transaction데이터를 서버에 전송하는데 실패함');
+      }
+    } catch (e) {
+      print('DecisionIncomeOrExpense Try-Catch Error : $e');
+      if (e is DioError) {
+        // DioErrorType을 체크하여 오류 종류를 파악
+        switch (e.type) {
+          case DioErrorType.connectTimeout:
+            print('Connection timeout');
+            break;
+          case DioErrorType.sendTimeout:
+            print('Send timeout');
+            break;
+          case DioErrorType.receiveTimeout:
+            print('Receive timeout');
+            break;
+          case DioErrorType.response:
+          // 서버 응답을 받았지만 에러 상태 코드가 반환됨
+            print('Error response: ${e.response}');
+            break;
+          case DioErrorType.cancel:
+            print('Request cancelled');
+            break;
+          case DioErrorType.other:
+            print('Other error: ${e.message}');
+            break;
+        }
+      }
+    }
+  }
+
+
+  Future<void> postNoSafeBoxTransaction(bool isSafe) async{
+    final token = await storage.read(key: JWT_TOKEN);
+    String amount = _controller.text
+        .replaceAll(RegExp(r'[^0-9]'), ''); // 입력한 금액에서 숫자만 추출
+    double amountValue = double.tryParse(amount) ?? 0.0;
+    String transactionType =
+    selectedExpanseIndex == 0 ? "수입" : "지출";
+
+    // `Transaction` 객체 생성
+    Transaction transaction = Transaction(
+      amount: amountValue,
+      category: categoryItemString,
+      type: transactionType,
+      date: DateTime.now(), // 현재 날짜
+    );
+
+    // `Transaction` 객체를 JSON으로 변환
+    Map<String, dynamic> transactionJson = transaction.toJson();
+
+    try {
+      final resp = await dio.post('http://$ip/transactions/no-safe-box',
+          options: Options(headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token',
+          }),
+          data: transactionJson);
+      if (resp.statusCode == 200) {
+        // await ref.read(budgetProvider.notifier).getDailyBudgetAnytime(token!);
+        Navigator.pop(context, _controller.text);
+        print(
+            'DecisionIncomeOrExpense에서 Transaction데이터를 서버에 성공적으로 전송');
+      } else {
+        print(
+            'DecisionIncomeOrExpense에서 Transaction데이터를 서버에 전송하는데 실패함');
+      }
+    } catch (e) {
+      print('DecisionIncomeOrExpense Try-Catch Error : $e');
+      if (e is DioError) {
+        // DioErrorType을 체크하여 오류 종류를 파악
+        switch (e.type) {
+          case DioErrorType.connectTimeout:
+            print('Connection timeout');
+            break;
+          case DioErrorType.sendTimeout:
+            print('Send timeout');
+            break;
+          case DioErrorType.receiveTimeout:
+            print('Receive timeout');
+            break;
+          case DioErrorType.response:
+          // 서버 응답을 받았지만 에러 상태 코드가 반환됨
+            print('Error response: ${e.response}');
+            break;
+          case DioErrorType.cancel:
+            print('Request cancelled');
+            break;
+          case DioErrorType.other:
+            print('Other error: ${e.message}');
+            break;
+        }
+      }
+    }
+  }
 
 
 

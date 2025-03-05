@@ -21,7 +21,7 @@ class _IncomeorexpenseState extends ConsumerState<Incomeorexpense> {
 
 
   double daily_budget_anytime = 0;
-   // 토큰을 저장할 변수
+  // 토큰을 저장할 변수
   Future<void> getLoadData() async {
 
     final storage = FlutterSecureStorage();
@@ -37,11 +37,21 @@ class _IncomeorexpenseState extends ConsumerState<Incomeorexpense> {
     getLoadData();  // IncomeorExpense 위젯이 나타날 때마다 호출
   }
 
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     final budget = ref.watch(budgetProvider); // 상태 구독
 
+    // 다른 화면에서 상태가 업데이트되면 자동으로 UI가 리빌드되도록 하기
+    ///이부분 수정.
+    setState(() {
+      getLoadData();
+    });
 
     TextEditingController _controller = TextEditingController();
     // Get current date and day in Korean
