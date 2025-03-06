@@ -87,7 +87,7 @@ class _CloseBudgetDetailState extends ConsumerState<CloseBudgetDetail> {
           Padding(
             padding: const EdgeInsets.only(left: 24.0),
             child: Text(
-              '오늘 하루 잔여 예산: ${NumberFormat('#,###').format((dailySummary.dailyBudgetNoChange - dailySummary.dailyExpenseTotal + dailySummary.dailyIncomeTotal).toInt())}원',
+              '오늘 하루 잔여 예산: ${NumberFormat('#,###').format((dailySummary.currentDailyBudget).toInt())}원',
             ),
           ),
           SizedBox(
@@ -282,6 +282,7 @@ class _CloseBudgetDetailState extends ConsumerState<CloseBudgetDetail> {
         final dailyIncomeTotal = resp.data['daily_income_total'];
         final dailyExpenseTotal = resp.data['daily_expense_total'];
         final dailyBudgetNoChanged = resp.data['daily_budget_no_change'];
+        final currentDailyBudget = resp.data['current_daily_budget'];
 
         print('${resp.data}');
 
@@ -289,15 +290,15 @@ class _CloseBudgetDetailState extends ConsumerState<CloseBudgetDetail> {
         List<dynamic> data = resp.data['transactions']; // 데이터를 받아서
         List<Transaction> fetchedTransactions =
             data.map((json) => Transaction.fromJson(json)).toList();
-        for (var transaction in fetchedTransactions) {
-          print("Transaction ID: ${transaction.id}");
-        }
+
         // 상태 업데이트
         final dailySummary = DailySummary(
             transactions: fetchedTransactions,
             dailyIncomeTotal: dailyIncomeTotal,
             dailyExpenseTotal: dailyExpenseTotal,
-            dailyBudgetNoChange: dailyBudgetNoChanged);
+            dailyBudgetNoChange: dailyBudgetNoChanged,
+            currentDailyBudget: currentDailyBudget,
+        );
 
         ref
             .read(dailySummaryProvider.notifier)
@@ -307,4 +308,5 @@ class _CloseBudgetDetailState extends ConsumerState<CloseBudgetDetail> {
       print('CloseBudgetDetail Try-Catch Error : $e');
     }
   }
+
 }

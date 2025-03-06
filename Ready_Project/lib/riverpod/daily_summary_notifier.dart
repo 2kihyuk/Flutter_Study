@@ -10,6 +10,7 @@ class DailySummaryNotifier extends StateNotifier<DailySummary> {
     dailyExpenseTotal: 0.0,
     dailyIncomeTotal: 0.0,
     dailyBudgetNoChange: 0.0,
+    currentDailyBudget: 0.0,
   ));
 
   // 상태 업데이트하는 메서드

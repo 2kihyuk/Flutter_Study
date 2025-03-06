@@ -49,9 +49,9 @@ class _IncomeorexpenseState extends ConsumerState<Incomeorexpense> {
 
     // 다른 화면에서 상태가 업데이트되면 자동으로 UI가 리빌드되도록 하기
     ///이부분 수정.
-    setState(() {
-      getLoadData();
-    });
+    // setState(() {
+    //   getLoadData();
+    // });
 
     TextEditingController _controller = TextEditingController();
     // Get current date and day in Korean
