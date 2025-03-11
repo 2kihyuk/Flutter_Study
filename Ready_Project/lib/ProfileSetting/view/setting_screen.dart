@@ -24,8 +24,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
   TextEditingController _usernameController = TextEditingController();
 
 
-  // TextEditingController _monthBudgetController = TextEditingController();
-
   @override
   void initState() {
     FlutterLocalNotification.init();
@@ -101,6 +99,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
             child: Text('비밀번호 변경하기'),
           ),
           Divider(),
+          SwitchListTile(
+            title: Text('알림 설정'),
+            value: _isNotificationEnabled,
+            onChanged: (bool value) {
+              setState(() {
+                _isNotificationEnabled = value;
+              });
+              _saveNotificationSetting(value);
+            },
+          ),
+          Divider(),
           Text(
             '개인정보 보호 및 공유',
             style: TextStyle(fontSize: 20.0),
@@ -152,22 +161,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
             },
             child: Text('로그아웃'),
           ),
-          SwitchListTile(
-            title: Text('알림 설정'),
-            value: _isNotificationEnabled,
-            onChanged: (bool value) {
-              setState(() {
-                _isNotificationEnabled = value;
-              });
-              _saveNotificationSetting(value);
-            },
-          ),
-          ElevatedButton(
-            onPressed: () {
-              FlutterLocalNotification.showNotification();
-            },
-            child: Text('알림 버튼'),
-          ),
+
+          // ElevatedButton(
+          //   onPressed: () {
+          //     FlutterLocalNotification.showNotification();
+          //   },
+          //   child: Text('알림 버튼'),
+          // ),
 
         ],
       ),

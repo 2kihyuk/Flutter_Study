@@ -87,8 +87,8 @@ class FlutterLocalNotification {
 
       const NotificationDetails notificationDetails = NotificationDetails(
           android: androidNotificationDetails, iOS: DarwinNotificationDetails(badgeNumber: 1));
-      var scheduledTime = tz.TZDateTime.now(tz.local).add(Duration(seconds: 10));
-      // var scheduledTime = _makeTime(21, 00, 00);
+      // var scheduledTime = tz.TZDateTime.now(tz.local).add(Duration(seconds: 10));
+      var scheduledTime = _makeTime(21, 00, 00);
       // tz.initializeTimeZones();
       print("Local Time Zone: ${tz.local}");
       print("Scheduled time: ${scheduledTime}");
