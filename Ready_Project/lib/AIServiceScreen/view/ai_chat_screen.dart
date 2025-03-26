@@ -266,7 +266,7 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen> {
         '저번 달 누적 지출액은 ${NumberFormat('#,###').format(last_month_expense_total)}원 이고 '
         '저번 달 누적 수입 액은 ${NumberFormat('#,###').format(last_month_income_total)}원 이고 '
         '저번 달 지출 내역은 ${lastMonthExpenses.entries.map((entry) => entry.key)} 항목에  각각 ${lastMonthExpenses.entries.map((entry) => entry.value)}원이야.'
-        '저번 달 내 소비 패턴에 대한 분석과 어떻게 하면 이번 달에 더 나은 소비를 할 수 있을지 조언해줘.';
+        '저번 달 내 소비 패턴에 대한 분석과 어떻게 하면 이번 달에 더 나은 소비를 할 수 있을지 금액을 중심으로 조언해줘.';
   }
 
   String makeHowSaveBudgetThisMonth(
@@ -274,15 +274,12 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen> {
       double monthly_expense_total,
       double monthly_income_total,
       Map<String, double> categoryExpenses) {
-    ///이번 달 내 한달 총 사용 가능 금액은 얼마이고 , 이번 달 현재 누적 지출 액은 얼마이고, 이번 달 현재 누적 수입 액은 얼마이고 , 이번 달 지출 내역은 항목에 각각 원이야.
-    ///지금 몇일 남았고 , 이번 달 남은 내 지출 가능 금액은 한달총사용가능금액 - 현재 누적 지출액 이야. 남은 기간동안 어떻게 해야 합리적인 소비 및 예산을 관리 할 수 있을까?
-
     return '이번 달 내 한달 총 사용 가능 금액은 ${NumberFormat('#,###').format(budget.month_budget)}원 이고 ,'
         '이번 달 현재 누적 지출 금액은 ${NumberFormat('#,###').format(monthly_expense_total)}원 이고 ,'
-        '이번 달 현재 수입 지출 금액은 ${NumberFormat('#,###').format(monthly_income_total)}원 이고 ,'
+        '이번 달 현재 누적 수입 금액은 ${NumberFormat('#,###').format(monthly_income_total)}원 이고 ,'
         '이번 달 지출 내역은 ${categoryExpenses.entries.map((entry) => entry.key)} 항목에 각각 ${categoryExpenses.entries.map((entry) => entry.value)}원 이야.'
         '지금은 ${DateTime.now().month}월 ${DateTime.now().day}일인데, 이번 달 남은 내 지출 가능 금액은 ${NumberFormat('#,###').format(budget.month_budget - monthly_expense_total)}원 이야.'
-        '이번 달 남은 기간 동안 어떻게 해야 합리적인 소비 및 예산을 관리 할 수 있을지 조언해줘.';
+        '이번 달 남은 기간 동안 어떻게 해야 합리적인 소비 및 예산을 관리 할 수 있을지 금액을 중심으로 조언해줘.';
   }
 
   Future<void> getCumulativeData() async {

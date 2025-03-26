@@ -1,85 +1,88 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_skeleton_ui/flutter_skeleton_ui.dart';
 import 'package:lv2_actual/common/dio/dio.dart';
 import 'package:lv2_actual/common/layout/default_layout.dart';
 import 'package:lv2_actual/product/component/product_card.dart';
 import 'package:lv2_actual/restaurant/component/restaurant_card.dart';
+import 'package:lv2_actual/restaurant/provider/restaurant_provider.dart';
 import 'package:lv2_actual/restaurant/repository/restaurant_repository.dart';
 
 import '../../common/const/data.dart';
 import '../model/restaurant_detail_model.dart';
+import '../model/restaurant_model.dart';
 
-class RestaurantDetailScreen extends ConsumerWidget {
+class RestaurantDetailScreen extends ConsumerStatefulWidget {
   final String id;
 
   const RestaurantDetailScreen({required this.id, super.key});
 
-  // Future<Map<String,dynamic>> getRestaurantDetail() async {
-  //   final dio = Dio();
-  //
-  //
-  //   final accessToken = await storage.read(key: ACCESS_TOKEN_KEY);
-  //
-  //   final resp = await dio.get('http://$ip/restaurant/$id',
-  //       options: Options(headers: {
-  //         'authorization': 'Bearer $accessToken',
-  //       }));
-  //
-  //   return resp.data;
-  // }
+  @override
+  ConsumerState<RestaurantDetailScreen> createState() =>
+      _RestaurantDetailScreenState();
+}
 
-  // Future<RestaurantDetailModel> getRestaurantDetail(WidgetRef ref) async{
-  //   // final dio = Dio();
-  //   // //여기서 dio.interceptors.add()에 우리가 정의한 customInterceptor를 넣어주면서, dio요청이 딱 전송되기 전에 interceptor가 해당 요청을 가로채서
-  //   // //요청을 보낼떄, 요청을 받을때, 에러가 발생할때의 3가지 케이스에 대한 로직을 확인한다.
-  //   //
-  //   // dio.interceptors.add(
-  //   //   CustomInterceptor(storage: storage),
-  //   // );
-  //   // final dio = ref.watch(dioProvider);
-  //   // final repository = RestaurantRepository(dio,baseUrl: 'http://$ip/restaurant');
-  //   //
-  //   // return repository.getRestaurantDetail(id: id);
-  //   return ref.watch(restaurantRepositoryProvider).getRestaurantDetail(id: id);
-  // }
+class _RestaurantDetailScreenState
+    extends ConsumerState<RestaurantDetailScreen> {
+  // Future<Map<String,dynamic>> getRestaurantDetail() async {
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    ref.read(restaurantProvider.notifier).getDetail(id: widget.id);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final state = ref.watch(restaurantDetailProvider(widget.id));
+
+    if (state == null) {
+      return DefaultLayout(
+          child: Center(
+        child: CircularProgressIndicator(),
+      ));
+    }
+
     return DefaultLayout(
-        title: '불타는 떡볶이',
-        child: FutureBuilder<RestaurantDetailModel>(
-          future: ref.watch(restaurantRepositoryProvider).getRestaurantDetail(id: id),
-          builder: (_,AsyncSnapshot<RestaurantDetailModel> snapshot){
-            print(snapshot.data);
+      title: '불타는 떡볶이',
+      child: CustomScrollView(
+        slivers: [
+          renderTop(model: state),
+          if(state is! RestaurantDetailModel)
+            renderLoading(),
+          if (state is RestaurantDetailModel) renderLabel(),
+          if (state is RestaurantDetailModel)
+            renderProducts(products: state.products),
 
-            if(snapshot.hasError){
-              return Center(
-                child: Text(snapshot.error.toString()),
-              );
-            }
+        ],
+      ),
+    );
+  }
 
-            if(!snapshot.hasData){
-              return Center(
-                child: CircularProgressIndicator(),
-              );
-            }
-            // final item = RestaurantDetailModel.fromJson(snapshot.data!,);
-            return CustomScrollView(
-              slivers: [
-                renderTop(model: snapshot.data!),
-                renderLabel(),
-                renderProducts(products: snapshot.data!.products),
-              ],
-            );
-          },
+  SliverPadding renderLoading() {
+    return SliverPadding(
+      padding: EdgeInsets.symmetric(horizontal: 16.0,vertical: 16.0,),
+      sliver: SliverList(
+        delegate: SliverChildListDelegate(
+          List.generate(3, (index) => Padding(
+            padding: EdgeInsets.only(bottom: 8.0),
+            child: SkeletonParagraph(
+              style: SkeletonParagraphStyle(
+                lines: 5,
+                padding: EdgeInsets.zero,
+              ),
+            ),
+          ))
         ),
+      ),
     );
   }
 
   SliverToBoxAdapter renderTop({
-    required RestaurantDetailModel model,
-}) {
+    required RestaurantModel model,
+  }) {
     return SliverToBoxAdapter(
       child: RestaurantCard.fromModel(
         model: model,
@@ -88,9 +91,8 @@ class RestaurantDetailScreen extends ConsumerWidget {
     );
   }
 
-  SliverPadding renderProducts({
-    required List<RestaurantProductModel> products
-}) {
+  SliverPadding renderProducts(
+      {required List<RestaurantProductModel> products}) {
     return SliverPadding(
       padding: EdgeInsets.symmetric(horizontal: 16.0),
       sliver: SliverList(

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:ready_project/ProfileSetting/view/change_information.dart';
+import 'package:ready_project/ProfileSetting/view/feedback_page.dart';
 import 'package:ready_project/auth/view/login_screen.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz;
@@ -23,7 +24,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
   String birthDate = "";
   TextEditingController _usernameController = TextEditingController();
 
-
   @override
   void initState() {
     FlutterLocalNotification.init();
@@ -35,7 +35,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   _loadNotificationSetting() async {
     final storage = FlutterSecureStorage();
     String? notificationsEnabled =
-    await storage.read(key: 'notificationsEnabled');
+        await storage.read(key: 'notificationsEnabled');
     print("${notificationsEnabled}");
     setState(() {
       _isNotificationEnabled = notificationsEnabled == 'true';
@@ -92,9 +92,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
           OutlinedButton(
             onPressed: () {
-              Navigator.of(context).push(
-                  MaterialPageRoute(builder: (_) => ChangeInformation())
-              );
+              Navigator.of(context)
+                  .push(MaterialPageRoute(builder: (_) => ChangeInformation()));
             },
             child: Text('비밀번호 변경하기'),
           ),
@@ -116,7 +115,28 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
           OutlinedButton(
             onPressed: () {
-
+              showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: Text('계정 삭제'),
+                      content: Text('계정을 삭제 하시겠습니까?'),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                            deleteAccount();
+                          },
+                          child: Text('확인'),
+                        ),
+                        TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: Text('취소'))
+                      ],
+                    );
+                  });
             },
             child: Text('계정 삭제하기'),
           ),
@@ -127,7 +147,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
           OutlinedButton(
             onPressed: () {
-
+              Navigator.of(context).push(MaterialPageRoute(builder: (_)=> FeedbackPage()));
             },
             child: Text('피드백 남기기'),
           ),
@@ -168,7 +188,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
           //   },
           //   child: Text('알림 버튼'),
           // ),
-
         ],
       ),
     );
@@ -192,8 +211,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       if (response.statusCode == 200) {
         print("SettingScreen : LogOut : ${response.data}");
         Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(builder: (_) => LoginScreen()),
-                (route) => false);
+            MaterialPageRoute(builder: (_) => LoginScreen()), (route) => false);
       } else {
         print('API 요청 실패: ${response.statusCode}');
       }
@@ -228,6 +246,32 @@ class _SettingsScreenState extends State<SettingsScreen> {
       }
     } catch (e) {
       print('에러 발생: IncomeOrExpense - getLoadData -  $e');
+    }
+  }
+
+  Future<void> deleteAccount() async {
+    final dio = Dio();
+    final token = await storage.read(key: JWT_TOKEN);
+
+    try {
+      final response = await dio.delete('http://$ip/auth/delete-account',
+          options: Options(headers: {
+            'Authorization': 'Bearer $token',
+          }));
+
+      if (response.statusCode == 200) {
+        Future.delayed(Duration(seconds: 1));
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (_) => LoginScreen()),
+          (Route<dynamic> route) => false,
+        );
+      } else {
+        print(
+            'Setting_Screen - deleteAccount - if-else Error ${response.statusCode} / ${response.statusMessage}');
+      }
+    } catch (e) {
+      print('Setting_Screen - deleteAccount - try-catch Error ${e}');
     }
   }
 }
