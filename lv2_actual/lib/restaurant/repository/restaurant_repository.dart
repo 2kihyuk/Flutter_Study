@@ -4,6 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lv2_actual/common/dio/dio.dart';
 import 'package:lv2_actual/common/model/cursor_pagination_model.dart';
 import 'package:lv2_actual/common/model/pagination_params.dart';
+import 'package:lv2_actual/common/repository/base_pagination_repository.dart';
+import 'package:retrofit/error_logger.dart';
 import 'package:retrofit/http.dart';
 
 import '../../common/const/data.dart';
@@ -18,7 +20,7 @@ final restaurantRepositoryProvider = Provider<RestaurantRepository>((ref) {
 });
 
 @RestApi()
-abstract class RestaurantRepository{
+abstract class RestaurantRepository implements IBasePaginationRepository<RestaurantModel>{
 
   //baseUrl
   //http://$ip/restaurant
@@ -33,7 +35,6 @@ abstract class RestaurantRepository{
    Future<CursorPagination<RestaurantModel>> paginate({
     @Queries() PaginationParams? paginationParams = const PaginationParams(),
 });
-
   @GET('/{id}')
   @Headers({
     'accessToken': 'true',
