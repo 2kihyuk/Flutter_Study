@@ -5,23 +5,24 @@ import 'package:lv2_actual/common/provider/pagination_provider.dart';
 
 import '../model/restaurant_model.dart';
 import '../repository/restaurant_repository.dart';
+import 'package:collection/collection.dart';
 
-class RestaurantStateNotifier extends PaginationProvider<RestaurantModel,RestaurantRepository> {
-
+class RestaurantStateNotifier
+    extends PaginationProvider<RestaurantModel, RestaurantRepository> {
   RestaurantStateNotifier({
     required super.repository,
   });
 
   getDetail({
     required String id,
-  }) async{
+  }) async {
     //만약 아직 데이터가 하나도 없는 상태라면? 즉 상태가 CursorPagination이 아니라  -> 데이터를 가져오는 시도를한다.
-    if(state is! CursorPagination){
+    if (state is! CursorPagination) {
       await this.paginate();
     }
 
     //state 가 CursorPagination이 아닐때 그냥 리턴
-    if(state is! CursorPagination){
+    if (state is! CursorPagination) {
       return;
     }
 
@@ -29,10 +30,20 @@ class RestaurantStateNotifier extends PaginationProvider<RestaurantModel,Restaur
     final pState = state as CursorPagination;
     final response = await repository.getRestaurantDetail(id: id);
 
-
-    state = pState.copyWith(
-      data: pState.data.map<RestaurantModel>((e) => e.id == id ? response : e).toList(),
-    );
+    if (pState.data.where((e) => e.id == id).isEmpty) {
+      state = pState.copyWith(
+        data: <RestaurantModel>[
+          ...pState.data,
+          response,
+        ],
+      );
+    } else {
+      state = pState.copyWith(
+        data: pState.data
+            .map<RestaurantModel>((e) => e.id == id ? response : e)
+            .toList(),
+      );
+    }
   }
 }
 
@@ -54,9 +65,8 @@ final restaurantDetailProvider =
   if (state is! CursorPagination) {
     return null;
   }
-  return state.data.firstWhere((element) => element.id == id);
+  return state.data.firstWhereOrNull((element) => element.id == id);
 });
-
 
 //
 // Future<void> paginate({
