@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:new_project/common/data/user_data.dart';
 import 'package:new_project/common/layout/default_layout.dart';
 import 'package:new_project/friend/view/add_friend_screen.dart';
 import 'package:new_project/profile/view/profile_screen.dart';
+
+import '../../user/data/user_data.dart';
 
 class FriendListScreen extends StatelessWidget {
   const FriendListScreen({super.key});

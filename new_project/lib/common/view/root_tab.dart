@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:new_project/common/data/user_data.dart';
 import 'package:new_project/common/layout/default_layout.dart';
 import 'package:new_project/friend/view/friend_list_screen.dart';
+import 'package:new_project/map/view/map_screen.dart';
 import 'package:new_project/profile/view/profile_screen.dart';
+
+import '../../user/data/user_data.dart';
 
 class RootTab extends StatefulWidget {
   const RootTab({super.key});
@@ -43,7 +45,7 @@ class _RootTabState extends State<RootTab> with SingleTickerProviderStateMixin {
         physics: NeverScrollableScrollPhysics(),
         controller: controller,
         children: [
-          Container(child: Center(child: Text('홈'))),
+          MapScreen(),
           FriendListScreen(),
           ProfileScreen(user:
             User(user_Name: '이기혁', user_ID: 'kihyuk5566', user_Number: '010-2930-1504', isUserIsMe: true),) //여기에 user에 대한 프로퍼티가 들어가야함. 그래서 로그인 하고나서 User클래스의 user 인스턴스를 Root_Tab에서 받아서 여기에는 로그인한 사용자 나 자신의 데이터.

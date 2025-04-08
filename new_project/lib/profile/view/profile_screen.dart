@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:new_project/common/data/user_data.dart';
 import 'package:new_project/common/layout/default_layout.dart';
+
+import '../../user/data/user_data.dart';
 
 class ProfileScreen extends StatefulWidget {
   //프로필 스크린에 대한 구조를 한개만 만들어 두고, 인자로 어떤 사용자에 대한 프로필을 받을 것인지를 받아서, 렌더링 해주는 방식으로 구현할 생각.
@@ -15,6 +16,7 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
+
     List<String> Imglink = [
       'https://picsum.photos/250?image=9',
       'https://picsum.photos/250?image=9',

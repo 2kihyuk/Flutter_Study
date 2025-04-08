@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:new_project/user/view/login_screen.dart';
 import 'package:new_project/common/view/root_tab.dart';
 
 void main() {
@@ -14,6 +15,6 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return RootTab();
+    return LoginScreen();
   }
 }
