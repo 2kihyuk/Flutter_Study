@@ -1,6 +1,6 @@
 # new_project
 
-A new Flutter project.
+장소 기반의 피드 형태의 기록을 작성하는 앱
 
 ## Getting Started
 
