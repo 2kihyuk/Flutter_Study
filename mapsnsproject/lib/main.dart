@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_naver_map/flutter_naver_map.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:mapsnsproject/user/view/login_screen.dart';
 
-void main() async {
+void main()  async{
   WidgetsFlutterBinding.ensureInitialized();
-  await NaverMapSdk.instance.initialize(clientId: 'nb8b9lfh3s');
-
   runApp(
       MaterialApp(
         home: HomeScreen(),
