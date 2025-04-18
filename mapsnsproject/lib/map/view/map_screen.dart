@@ -131,6 +131,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:mapsnsproject/common/layout/default_layout.dart';
+import 'package:mapsnsproject/map/data/map_data.dart';
 import '../../common/component/custom_text_form_field.dart';
 import '../../common/const/colors.dart';
 
@@ -170,8 +171,8 @@ class MapScreen extends StatelessWidget {
     );
   }
   Future<void> _getData(String query) async{
-    final apiKey = 'AIzaSyC_o3QsipOt5oOuXr_ju4q-zs6r-budsYs'; // API 키를 실제 키로 변경
-    final url = Uri.parse('https://maps.googleapis.com/maps/api/place/textsearch/json?query=$query&key=$apiKey');
+    // final apiKey = 'AIzaSyC_o3QsipOt5oOuXr_ju4q-zs6r-budsYs'; // API 키를 실제 키로 변경
+    final url = Uri.parse('https://maps.googleapis.com/maps/api/place/textsearch/json?query=$query&key=$mapKey');
 
 
     try {
