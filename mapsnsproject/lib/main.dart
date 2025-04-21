@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:mapsnsproject/user/view/login_screen.dart';
 
-void main()  async{
+void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   runApp(
-      MaterialApp(
-        home: HomeScreen(),
+      ProviderScope(
+        child: MaterialApp(
+          home: HomeScreen(),
+        ),
       )
   );
 }
