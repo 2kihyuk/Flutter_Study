@@ -77,6 +77,7 @@ class _GMapScreenState extends State<GMap> {
               target: LatLng(37.42796133580664, 126.085749655962),
               zoom: 14.0,
             ),
+            mapToolbarEnabled: true,
             myLocationEnabled: true,
             myLocationButtonEnabled: true,
             onTap: (LatLng position) {

@@ -17,6 +17,13 @@
    <string>We need your location for the map</string>
    <key>NSLocationAlwaysUsageDescription</key>
    <string>We need your location for the map</string>
+   <key>NSCameraUsageDescription</key>
+   <string>We need access to your camera for taking photos.</string>
+   <key>NSPhotoLibraryUsageDescription</key>
+   <string>We need access to your photo library to select photos.</string>
+   <key>NSMicrophoneUsageDescription</key>
+   <string>We need access to your microphone for recording videos.</string>
+
 
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
