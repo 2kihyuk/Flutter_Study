@@ -26,11 +26,13 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   String searchQuery = '';
   List<Place> places = []; // 검색된 결과들을 저장할 리스트
   // late Place pickPlace;
+  bool isExpanded = true;
 
   @override
   Widget build(BuildContext context) {
     final searchQuery = ref.watch(searchQueryProvider);
     final placesAsyncValue = ref.watch(placesProvider);
+    // ChIJhUS2MhKcfDUR30HeqHh32O8
 
     return DefaultLayout(
       titleText: '홈',
@@ -45,15 +47,18 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                   ref.read(searchQueryProvider.notifier).state = value;
                 },
               ),
-              SizedBox(height: 20),
+              SizedBox(height: 30),
 
               placesAsyncValue.when(
                 data: (places) {
                   if (places!.isNotEmpty) {
                     return SizedBox(
                       height: 150,
-                      child: ListView.builder(
-                        itemCount: places?.length,
+                      child: ListView.separated(
+                        separatorBuilder: (context, index) {
+                          return Divider();
+                        },
+                        itemCount: places!.length,
                         itemBuilder: (context, index) {
                           final place = places[index];
                           return ListTile(
@@ -64,7 +69,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                               print('선택된 장소: ${place.name}');
                               ref.read(pickPlaceProvider.notifier).state =
                                   place;
-                             _CheckFeedAlertDialog();
+                              _CheckFeedAlertDialog();
                               //여기에 이제 다이얼로그를 띄워서 해당 장소에 추억을 기록하겠냐고 물어봐야함.
                               //여기서 pickPlace를 인자로 넣어서 구글맵에 함수를 실행시켜야함.
                             },
@@ -82,15 +87,38 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                     (error, stack) =>
                         Center(child: Text("에러: $error")), // 에러 처리
               ),
-              SizedBox(height: 20),
+              SizedBox(height: 40),
 
-              Container(
-                height: 400,
-                child: Consumer(builder: (context,watch,child){
-                  final pickPlace = ref.watch(pickPlaceProvider);
-                  return GMap(pickPlace: pickPlace);
-                }),
-              )
+              ExpansionTile(
+                leading: Icon(Icons.map_sharp),
+                title: Text(isExpanded ? '지도 접기' : '지도 펼치기', style: TextStyle(fontSize: 16.0,fontWeight: FontWeight.w700),),
+                initiallyExpanded: isExpanded,
+                onExpansionChanged: (bool expanding) {
+                  setState(() {
+                    isExpanded = expanding;
+                  });
+                },
+                children: [
+                  Container(
+                    height: 500,
+                    child: Consumer(
+                      builder: (context, watch, child) {
+                        final pickPlace = ref.watch(pickPlaceProvider);
+                        return GMap(pickPlace: pickPlace);
+                      },
+                    ),
+                  ),
+                ],
+              ),
+
+              SizedBox(height: 20,),
+
+              //방문했던 장소들을 요약해서 보여주고, places api ai를 활용하여, 요약?
+              //방문했던 장소들을 모아둔 맵 리스트 하나 해두고, 해당 장소 리뷰 요약한거 받기.
+
+
+
+
             ],
           ),
         ),
@@ -98,23 +126,36 @@ class _MapScreenState extends ConsumerState<MapScreen> {
       IsaddButton: false,
     );
   }
-  _CheckFeedAlertDialog() {
-    showDialog(context: context, builder: (context){
-      return AlertDialog(
-        title: Text('피드 작성하기'),
-        content: Text('${ref.read(pickPlaceProvider.notifier).state.name}에 기록을 남기시겠습니까?'),
-        actions: [
-          TextButton(onPressed: (){
-            Navigator.of(context).pop();
-          }, child: Text('취소')),
-          TextButton(onPressed: (){
-            Navigator.of(context).pop();
-            Navigator.of(context).push(MaterialPageRoute(builder: (_) => WriteSnsScreen()));
-          }, child: Text('작성')),
-        ],
-      );
-    });
 
+  _CheckFeedAlertDialog() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('피드 작성하기'),
+          content: Text(
+            '${ref.read(pickPlaceProvider.notifier).state.name}에 기록을 남기시겠습니까?',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('취소'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                Navigator.of(
+                  context,
+                ).push(MaterialPageRoute(builder: (_) => WriteSnsScreen()));
+              },
+              child: Text('작성'),
+            ),
+          ],
+        );
+      },
+    );
   }
 }
 
@@ -308,7 +349,6 @@ class _MapScreenState extends ConsumerState<MapScreen> {
 //       itemCount: places.length,
 //     ),
 //   ),
-
 
 /// 화면 이동 순서와 어떻게 할것인지를 세세하게 생각해봐야하는데,,,
 /// 검색창에 장소를 검색해서 결과가 리스트로 나온다.

@@ -3,10 +3,12 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:mapsnsproject/common/component/custom_text_form_field.dart';
 import 'package:mapsnsproject/common/const/colors.dart';
 import 'package:mapsnsproject/common/layout/default_layout.dart';
+import 'package:mapsnsproject/map/data/sns_post_data.dart';
 import 'package:mapsnsproject/map/repository/map_repository.dart';
 
 import '../data/address_data.dart';
@@ -22,6 +24,7 @@ class WriteSnsScreen extends ConsumerWidget {
     final place = ref.watch(pickPlaceProvider.notifier).state;
     final XFile? _image = ref.watch(imageProvider);
     final ImagePicker imagePicker = ref.watch(imagePickerProvider);
+    String positionPlaceName = '';
 
     TextEditingController contentController = TextEditingController();
 
@@ -56,7 +59,10 @@ class WriteSnsScreen extends ConsumerWidget {
                           ],
                         )
                         : CustomTextFormField(
-                          onChanged: (String value) {},
+
+                          onChanged: (String value) {
+                            positionPlaceName = value;
+                          },
                           hintText: '장소명을 입력하세요.',
                         ),
                     SizedBox(height: 8.0),
@@ -128,7 +134,11 @@ class WriteSnsScreen extends ConsumerWidget {
                 ),
                 child:
                     _image == null
-                        ? Icon(Icons.photo_outlined, size: 50, color: Colors.white)
+                        ? Icon(
+                          Icons.photo_outlined,
+                          size: 50,
+                          color: Colors.white,
+                        )
                         : ClipRRect(
                           borderRadius: BorderRadius.circular(8.0),
                           child: Image.file(
@@ -156,11 +166,16 @@ class WriteSnsScreen extends ConsumerWidget {
               ),
               SizedBox(height: 30),
               ElevatedButton(
-                onPressed: () {
-                  ///1번 데이터 모델 : 장소를 검색해서 들어왔다면, place객체에 존재하는 지명, 좌표, 사진, 본문내용을 묶어서 서버에 post.
-                  ///2번 데이터 모델 : 지도에서 장소를 찍어서 들어왔다면, 지명텍스트필드에 입력한 사용자 지정 장소명 , position.latitude를 위도, position.longtitude를 경도, 사진, 본문내용을
-                  ///묶어서 서버에 post.
-                  ///position이 NULL값인지 아닌지를 구분해서 데이터모델을 어떤걸 선택할 것인지 분리하는 로직을 작성해야함.
+                onPressed: () async{
+
+
+                  // if (position == null) {
+                  //   _MakePlacePostModel(place, contentController.text);
+                  // } else {
+                  //   _MakePositionPlaceModel(position!,positionPlaceName,contentController.text);
+                  // }
+
+
                 },
                 style: ElevatedButton.styleFrom(backgroundColor: PRIMARY_COLOR),
                 child: Text('작성 하기 ', style: TextStyle(color: Colors.white)),
@@ -172,6 +187,74 @@ class WriteSnsScreen extends ConsumerWidget {
       IsaddButton: false,
     );
   }
+
+
+  ///사진 업로드 방식 : AWS S3를 이용하여, 앱에서 전송 버튼 클릭 시  우선적으로 S3에 사진을 업로드 한 후, 해당 이미지의 경로를 반환 받아서, 그 경로를 데이터모델에 넣어서 서버에 post해야함.
+
+  // Future<String> UploadImgS3(File imageFile) async {
+  //   try {
+  //     final String bucketName = 'mapsnsproject1504';
+  //     final String accessKey = 'YOUR_AWS_ACCESS_KEY';
+  //     final String secretKey = 'YOUR_AWS_SECRET_KEY';
+  //     final String region = 'ap-northeast-2'; // 예시 리전
+  //
+  //     final String filePath = 'user_images/${DateTime.now().millisecondsSinceEpoch}.jpg';
+  //     final uri = Uri.parse('https://$bucketName.s3.$region.amazonaws.com/$filePath');
+  //
+  //     // HTTP PUT 요청을 사용하여 파일을 S3로 업로드
+  //     final request = http.MultipartRequest('PUT', uri);
+  //     request.headers['x-amz-acl'] = 'public-read';  // 퍼블릭 읽기 권한 설정
+  //     request.headers['Content-Type'] = 'image/jpeg';  // 이미지 타입 설정
+  //
+  //     // 업로드할 파일을 첨부
+  //     request.files.add(await http.MultipartFile.fromPath('file', imageFile.path));
+  //
+  //     // 요청을 서버로 전송
+  //     final response = await request.send();
+  //
+  //     if (response.statusCode == 200) {
+  //       // 업로드 성공 시 파일 URL을 반환
+  //       final imageUrl = 'https://$bucketName.s3.$region.amazonaws.com/$filePath';
+  //       print('Image uploaded successfully: $imageUrl');
+  //       return imageUrl;  // 이미지 URL 반환
+  //     } else {
+  //       print('Image upload failed with status code: ${response.statusCode}');
+  //       return '';  // 실패 시 빈 문자열 반환
+  //     }
+  //   } catch (e) {
+  //     print('Error uploading image: $e');
+  //     return '';  // 오류 발생 시 빈 문자열 반환
+  //   }
+  // }
+
+  SnsPostModel _MakePlacePostModel(Place place, String content) {
+    SnsPostModel placeModel = SnsPostModel(
+      placeName: place.name,
+      formatted_address: place.formatted_address,
+      placeLat: place.geometry.location.lat,
+      placeLng: place.geometry.location.lng,
+      content: content,
+      ImgPath: 'ImgPath',
+    );
+    print(
+      'placeModel : ${placeModel.placeName} , ${placeModel.formatted_address} , ${placeModel.placeLat} / ${placeModel.placeLng} ,${placeModel.content} , ${placeModel.ImgPath}',
+    );
+    return placeModel;
+  }
+
+  SnsPostModel _MakePositionPlaceModel(LatLng position, String positionPlaceName, String content) {
+    SnsPostModel positionModel = SnsPostModel(
+      placeName: positionPlaceName,
+      placeLat: position.latitude,
+      placeLng: position.longitude,
+      content: content,
+      ImgPath: 'ImgPath',
+    );
+
+    print('positionModel : ${positionModel.placeName} , ${positionModel.placeLat} / ${positionModel.placeLng} ,${positionModel.content} , ${positionModel.ImgPath}',);
+    return positionModel;
+  }
+
 }
 
 //만약 position값이 존재한다면 -> 검색이 아닌 구글맵에서 직접 클릭한 장소의 좌표만 가지고 글 작성을 하는 것이기 때문에, 장소명과 다른 정보들을 입력할 수 있는 텍스트 필드를 만들기.
