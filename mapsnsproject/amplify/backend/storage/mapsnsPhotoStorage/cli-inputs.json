@@ -1,0 +1,18 @@
+{
+  "resourceName": "mapsnsPhotoStorage",
+  "policyUUID": "ba9a9666",
+  "bucketName": "mapsnsproject1504",
+  "storageAccess": "authAndGuest",
+  "guestAccess": [
+    "CREATE_AND_UPDATE",
+    "READ",
+    "DELETE"
+  ],
+  "authAccess": [
+    "CREATE_AND_UPDATE",
+    "READ",
+    "DELETE"
+  ],
+  "triggerFunction": "S3Triggereb0c9ece",
+  "groupAccess": {}
+}

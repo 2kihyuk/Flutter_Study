@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mapsnsproject/map/layout/sns_feed_screen.dart';
 
 import '../../common/layout/default_layout.dart';
 import '../../user/data/user_data.dart';
@@ -75,6 +76,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     onTap: () {
                       //해당 피드 눌렀을때 해당 피드 디테일로 이동.
                       print(index);
+                      Navigator.of(context).push(MaterialPageRoute(builder: (_)=> SnsFeedScreen()));
                     },
                     //child에 사진 주소. 그럼 일단 사진 업로드부터.
                     child: Image.network(img),

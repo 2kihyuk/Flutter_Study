@@ -34,3 +34,6 @@ final placesProvider = FutureProvider<List<Place>?>((ref) async {
 });
 
 
+
+final positionPlaceNameProvider = StateProvider<String>((ref) => '');
+

@@ -1,0 +1,29 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-mapsnsproject-dev-616c5-authRole",
+      "UnauthRoleArn": "arn:aws:iam::762233773335:role/amplify-mapsnsproject-dev-616c5-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::762233773335:role/amplify-mapsnsproject-dev-616c5-authRole",
+      "Region": "ap-northeast-2",
+      "DeploymentBucketName": "amplify-mapsnsproject-dev-616c5-deployment",
+      "UnauthRoleName": "amplify-mapsnsproject-dev-616c5-unauthRole",
+      "StackName": "amplify-mapsnsproject-dev-616c5",
+      "StackId": "arn:aws:cloudformation:ap-northeast-2:762233773335:stack/amplify-mapsnsproject-dev-616c5/b49dc850-2276-11f0-be56-066746e2998f",
+      "AmplifyAppId": "d21u84i407v46y"
+    },
+    "categories": {
+      "auth": {
+        "mapsnsproject9ad5edd9": {}
+      },
+      "storage": {
+        "mapsnsPhotoStorage": {}
+      },
+      "function": {
+        "S3Triggereb0c9ece": {
+          "deploymentBucketName": "amplify-mapsnsproject-dev-616c5-deployment",
+          "s3Key": "amplify-builds/S3Triggereb0c9ece-4b347152365a35776d4d-build.zip"
+        }
+      }
+    }
+  }
+}

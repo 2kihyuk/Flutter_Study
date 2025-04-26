@@ -1,5 +1,8 @@
 import 'dart:io';
+import 'dart:io' as io;
 
+import 'package:amplify_flutter/amplify_flutter.dart';
+import 'package:aws_common/vm.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -10,9 +13,11 @@ import 'package:mapsnsproject/common/const/colors.dart';
 import 'package:mapsnsproject/common/layout/default_layout.dart';
 import 'package:mapsnsproject/map/data/sns_post_data.dart';
 import 'package:mapsnsproject/map/repository/map_repository.dart';
-
+import 'package:mapsnsproject/map/repository/place_repository.dart';
 import '../data/address_data.dart';
 import '../repository/image_repository.dart';
+import 'package:amplify_flutter/amplify_flutter.dart';
+import 'package:amplify_storage_s3/amplify_storage_s3.dart';
 
 class WriteSnsScreen extends ConsumerWidget {
   final LatLng? position;
@@ -24,7 +29,7 @@ class WriteSnsScreen extends ConsumerWidget {
     final place = ref.watch(pickPlaceProvider.notifier).state;
     final XFile? _image = ref.watch(imageProvider);
     final ImagePicker imagePicker = ref.watch(imagePickerProvider);
-    String positionPlaceName = '';
+    final positionPlaceName= ref.watch(positionPlaceNameProvider);
 
     TextEditingController contentController = TextEditingController();
 
@@ -59,9 +64,8 @@ class WriteSnsScreen extends ConsumerWidget {
                           ],
                         )
                         : CustomTextFormField(
-
                           onChanged: (String value) {
-                            positionPlaceName = value;
+                            ref.read(positionPlaceNameProvider.notifier).state = value;
                           },
                           hintText: '장소명을 입력하세요.',
                         ),
@@ -166,16 +170,20 @@ class WriteSnsScreen extends ConsumerWidget {
               ),
               SizedBox(height: 30),
               ElevatedButton(
-                onPressed: () async{
+                onPressed: () async {
+                  final imgUrl = await uploadImageToS3(File(_image!.path));
+                  print(imgUrl);
 
-
-                  // if (position == null) {
-                  //   _MakePlacePostModel(place, contentController.text);
-                  // } else {
-                  //   _MakePositionPlaceModel(position!,positionPlaceName,contentController.text);
-                  // }
-
-
+                  if (position == null) {
+                    _MakePlacePostModel(place, contentController.text, imgUrl);
+                  } else {
+                    _MakePositionPlaceModel(
+                      position!,
+                      positionPlaceName,
+                      contentController.text,
+                      imgUrl,
+                    );
+                  }
                 },
                 style: ElevatedButton.styleFrom(backgroundColor: PRIMARY_COLOR),
                 child: Text('작성 하기 ', style: TextStyle(color: Colors.white)),
@@ -188,53 +196,37 @@ class WriteSnsScreen extends ConsumerWidget {
     );
   }
 
-
   ///사진 업로드 방식 : AWS S3를 이용하여, 앱에서 전송 버튼 클릭 시  우선적으로 S3에 사진을 업로드 한 후, 해당 이미지의 경로를 반환 받아서, 그 경로를 데이터모델에 넣어서 서버에 post해야함.
 
-  // Future<String> UploadImgS3(File imageFile) async {
-  //   try {
-  //     final String bucketName = 'mapsnsproject1504';
-  //     final String accessKey = 'YOUR_AWS_ACCESS_KEY';
-  //     final String secretKey = 'YOUR_AWS_SECRET_KEY';
-  //     final String region = 'ap-northeast-2'; // 예시 리전
-  //
-  //     final String filePath = 'user_images/${DateTime.now().millisecondsSinceEpoch}.jpg';
-  //     final uri = Uri.parse('https://$bucketName.s3.$region.amazonaws.com/$filePath');
-  //
-  //     // HTTP PUT 요청을 사용하여 파일을 S3로 업로드
-  //     final request = http.MultipartRequest('PUT', uri);
-  //     request.headers['x-amz-acl'] = 'public-read';  // 퍼블릭 읽기 권한 설정
-  //     request.headers['Content-Type'] = 'image/jpeg';  // 이미지 타입 설정
-  //
-  //     // 업로드할 파일을 첨부
-  //     request.files.add(await http.MultipartFile.fromPath('file', imageFile.path));
-  //
-  //     // 요청을 서버로 전송
-  //     final response = await request.send();
-  //
-  //     if (response.statusCode == 200) {
-  //       // 업로드 성공 시 파일 URL을 반환
-  //       final imageUrl = 'https://$bucketName.s3.$region.amazonaws.com/$filePath';
-  //       print('Image uploaded successfully: $imageUrl');
-  //       return imageUrl;  // 이미지 URL 반환
-  //     } else {
-  //       print('Image upload failed with status code: ${response.statusCode}');
-  //       return '';  // 실패 시 빈 문자열 반환
-  //     }
-  //   } catch (e) {
-  //     print('Error uploading image: $e');
-  //     return '';  // 오류 발생 시 빈 문자열 반환
-  //   }
-  // }
+  /// 선택된 io.File을 S3에 업로드하고, public URL만 반환합니다.
+  Future<String> uploadImageToS3(io.File file) async {
+    await Amplify.Auth.fetchAuthSession();
+    // 1) AWSFilePlatform 래핑
+    final awsFile = AWSFilePlatform.fromFile(file);
 
-  SnsPostModel _MakePlacePostModel(Place place, String content) {
+    // 2) S3 버킷 내 저장 경로 정의
+    final key = 'user_images/${DateTime.now().millisecondsSinceEpoch}.jpg';
+    final storagePath = StoragePath.fromString(key);
+
+    // 3) 업로드 (public-read)
+    await Amplify.Storage.uploadFile(
+      localFile: awsFile,
+      path: storagePath,
+    ).result;
+
+    final urlResult = await Amplify.Storage.getUrl(path: storagePath).result;
+
+    return urlResult.url.toString();
+  }
+
+  SnsPostModel _MakePlacePostModel(Place place, String content, String imgUrl) {
     SnsPostModel placeModel = SnsPostModel(
       placeName: place.name,
       formatted_address: place.formatted_address,
       placeLat: place.geometry.location.lat,
       placeLng: place.geometry.location.lng,
       content: content,
-      ImgPath: 'ImgPath',
+      ImgPath: imgUrl,
     );
     print(
       'placeModel : ${placeModel.placeName} , ${placeModel.formatted_address} , ${placeModel.placeLat} / ${placeModel.placeLng} ,${placeModel.content} , ${placeModel.ImgPath}',
@@ -242,19 +234,25 @@ class WriteSnsScreen extends ConsumerWidget {
     return placeModel;
   }
 
-  SnsPostModel _MakePositionPlaceModel(LatLng position, String positionPlaceName, String content) {
+  SnsPostModel _MakePositionPlaceModel(
+    LatLng position,
+    String positionPlaceName,
+    String content,
+    String imgUrl,
+  ) {
     SnsPostModel positionModel = SnsPostModel(
       placeName: positionPlaceName,
       placeLat: position.latitude,
       placeLng: position.longitude,
       content: content,
-      ImgPath: 'ImgPath',
+      ImgPath: imgUrl,
     );
 
-    print('positionModel : ${positionModel.placeName} , ${positionModel.placeLat} / ${positionModel.placeLng} ,${positionModel.content} , ${positionModel.ImgPath}',);
+    print(
+      'positionModel : ${positionModel.placeName} , ${positionModel.placeLat} / ${positionModel.placeLng} ,${positionModel.content} , ${positionModel.ImgPath}',
+    );
     return positionModel;
   }
-
 }
 
 //만약 position값이 존재한다면 -> 검색이 아닌 구글맵에서 직접 클릭한 장소의 좌표만 가지고 글 작성을 하는 것이기 때문에, 장소명과 다른 정보들을 입력할 수 있는 텍스트 필드를 만들기.
@@ -266,3 +264,28 @@ class WriteSnsScreen extends ConsumerWidget {
 // Text('장소 리뷰 갯수 : ${place.user_ratings_total}'),
 //   Text('-------------------------'),
 //   Text('지도에서 직접 클릭한 장소의 좌표 : ${position?.latitude} , ${position?.longitude}')
+
+/// S3에 업로드하고, 업로드된 퍼블릭 URL을 반환합니다.
+// Future<String> uploadImageToS3(io.File imageFile) async {
+//   // 1) S3 내에 저장할 “key” (파일 경로)
+//   final key = 'user_images/${DateTime.now().millisecondsSinceEpoch}.jpg';
+//
+//   // 2) String → StoragePath 변환
+//   final storagePath = StoragePath.fromString(key);
+//   final awsFile = AWSFilePlatform.fromFile(imageFile);
+//
+//
+//   // 3) 파일 업로드
+//   await Amplify.Storage.uploadFile(
+//     localFile: awsFile,              // dart:io File
+//     path: storagePath,             // StoragePath
+//   );
+//
+//   // 4) 업로드된 객체의 URL 얻기
+//   final urlResult = await Amplify.Storage.getUrl(
+//     path: storagePath,             // StoragePath
+//   );
+//
+//   // 5) URL 반환
+//   return urlResult.url;
+// }
