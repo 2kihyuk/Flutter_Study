@@ -15,6 +15,13 @@ class SnsFeedScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text('SnspostPage'),
+            Container(
+              height: 400,
+              decoration: BoxDecoration(),
+              child: Image.network(
+                'https://mapsnsproject1504616c5-dev.s3.ap-northeast-2.amazonaws.com/user_images/1745745367536.jpg',
+              ),
+            ),
           ],
         ),
       ),

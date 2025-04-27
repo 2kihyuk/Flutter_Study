@@ -29,7 +29,7 @@ class WriteSnsScreen extends ConsumerWidget {
     final place = ref.watch(pickPlaceProvider.notifier).state;
     final XFile? _image = ref.watch(imageProvider);
     final ImagePicker imagePicker = ref.watch(imagePickerProvider);
-    final positionPlaceName= ref.watch(positionPlaceNameProvider);
+    final positionPlaceName = ref.watch(positionPlaceNameProvider);
 
     TextEditingController contentController = TextEditingController();
 
@@ -65,7 +65,8 @@ class WriteSnsScreen extends ConsumerWidget {
                         )
                         : CustomTextFormField(
                           onChanged: (String value) {
-                            ref.read(positionPlaceNameProvider.notifier).state = value;
+                            ref.read(positionPlaceNameProvider.notifier).state =
+                                value;
                           },
                           hintText: '장소명을 입력하세요.',
                         ),
@@ -171,19 +172,59 @@ class WriteSnsScreen extends ConsumerWidget {
               SizedBox(height: 30),
               ElevatedButton(
                 onPressed: () async {
-                  final imgUrl = await uploadImageToS3(File(_image!.path));
-                  print(imgUrl);
+                  try{
+                    final file = File(_image!.path);
 
-                  if (position == null) {
-                    _MakePlacePostModel(place, contentController.text, imgUrl);
-                  } else {
-                    _MakePositionPlaceModel(
+                    final imgUrl = await ref.read(
+                      UploadImgS3Provider(file).future,
+                    );
+                    print(imgUrl);
+
+                    final model = position == null ? _MakePlacePostModel(place, contentController.text, imgUrl) :  _MakePositionPlaceModel(
                       position!,
                       positionPlaceName,
                       contentController.text,
                       imgUrl,
                     );
+                    ///model을 post 하는 방식으로..
+                    ///repository에 post하는 코드를 작성해서 riverPod.
+
+                    // await ref.read(mapRepositoryProvider).createPost(model);
+
+                    await showDialog(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        title: Text('성공'),
+                        content: Text('피드가 성공적으로 등록되었습니다.'),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.of(context).pop(),
+                            child: Text('확인'),
+                          ),
+                        ],
+                      ),
+                    );
+
+                    // 5) 다이얼로그 닫힌 뒤, 화면도 pop
+                    Navigator.of(context).pop();
+                  }catch(e){
+                    // 6) 실패 다이얼로그
+                    await showDialog(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                      title: Text('실패'),
+                      content: Text('피드 등록에 실패했습니다.\n$e'),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.of(context).pop(),
+                          child: Text('확인'),
+                        ),
+                      ],
+                    ),
+                    );
                   }
+
+
                 },
                 style: ElevatedButton.styleFrom(backgroundColor: PRIMARY_COLOR),
                 child: Text('작성 하기 ', style: TextStyle(color: Colors.white)),
@@ -197,27 +238,6 @@ class WriteSnsScreen extends ConsumerWidget {
   }
 
   ///사진 업로드 방식 : AWS S3를 이용하여, 앱에서 전송 버튼 클릭 시  우선적으로 S3에 사진을 업로드 한 후, 해당 이미지의 경로를 반환 받아서, 그 경로를 데이터모델에 넣어서 서버에 post해야함.
-
-  /// 선택된 io.File을 S3에 업로드하고, public URL만 반환합니다.
-  Future<String> uploadImageToS3(io.File file) async {
-    await Amplify.Auth.fetchAuthSession();
-    // 1) AWSFilePlatform 래핑
-    final awsFile = AWSFilePlatform.fromFile(file);
-
-    // 2) S3 버킷 내 저장 경로 정의
-    final key = 'user_images/${DateTime.now().millisecondsSinceEpoch}.jpg';
-    final storagePath = StoragePath.fromString(key);
-
-    // 3) 업로드 (public-read)
-    await Amplify.Storage.uploadFile(
-      localFile: awsFile,
-      path: storagePath,
-    ).result;
-
-    final urlResult = await Amplify.Storage.getUrl(path: storagePath).result;
-
-    return urlResult.url.toString();
-  }
 
   SnsPostModel _MakePlacePostModel(Place place, String content, String imgUrl) {
     SnsPostModel placeModel = SnsPostModel(
@@ -288,4 +308,25 @@ class WriteSnsScreen extends ConsumerWidget {
 //
 //   // 5) URL 반환
 //   return urlResult.url;
+// }
+
+/// 선택된 io.File을 S3에 업로드하고, public URL만 반환합니다.
+// Future<String> uploadImageToS3(io.File file) async {
+//   await Amplify.Auth.fetchAuthSession();
+//   // 1) AWSFilePlatform 래핑
+//   final awsFile = AWSFilePlatform.fromFile(file);
+//
+//   // 2) S3 버킷 내 저장 경로 정의
+//   final key = 'user_images/${DateTime.now().millisecondsSinceEpoch}.jpg';
+//   final storagePath = StoragePath.fromString(key);
+//
+//   // 3) 업로드 (public-read)
+//   await Amplify.Storage.uploadFile(
+//     localFile: awsFile,
+//     path: storagePath,
+//   ).result;
+//
+//   final urlResult = await Amplify.Storage.getUrl(path: storagePath).result;
+//
+//   return urlResult.url.toString();
 // }
