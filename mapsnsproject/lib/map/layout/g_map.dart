@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -6,8 +8,9 @@ import 'package:mapsnsproject/map/layout/write_sns_screen.dart';
 
 class GMap extends StatefulWidget {
   final Place pickPlace;
+  final VoidCallback onCameraIdle;
 
-  const GMap({required this.pickPlace, super.key});
+  const GMap({required this.pickPlace,required this.onCameraIdle, super.key});
 
   @override
   _GMapScreenState createState() => _GMapScreenState();
@@ -22,9 +25,33 @@ class _GMapScreenState extends State<GMap> with AutomaticKeepAliveClientMixin<GM
   bool get wantKeepAlive => true;
 
   @override
+  void didUpdateWidget(covariant GMap oldWidget) {
+    // TODO: implement didUpdateWidget
+    super.didUpdateWidget(oldWidget);
+    if(widget.pickPlace != oldWidget.pickPlace){
+      final newLatLng = LatLng(widget.pickPlace.geometry.location.lat, widget.pickPlace.geometry.location.lng);
+      mapController.animateCamera(
+        CameraUpdate.newCameraPosition(CameraPosition(target: newLatLng,zoom: 14.0))
+      ).then((_) async{
+        
+        await Future.delayed(Duration(seconds: 1));
+        //애니메이션 끝난시점.
+        widget.onCameraIdle();
+      });
+    }
+  }
+
+  @override
   void initState() {
     super.initState();
+    _initLocationPermission();
+  }
 
+  Future<void> _initLocationPermission() async {
+    var status = await Geolocator.requestPermission();
+    if (status == LocationPermission.always || status == LocationPermission.whileInUse) {
+      setState(() {}); // 권한 승인되면 rebuild
+    }
   }
 
   void _onMapCreated(GoogleMapController controller) {
@@ -79,9 +106,16 @@ class _GMapScreenState extends State<GMap> with AutomaticKeepAliveClientMixin<GM
                   : LatLng(37.42796133580664, 126.085749655962),
               zoom: 14.0,
             ),
+            gestureRecognizers: <Factory<OneSequenceGestureRecognizer>>{
+              Factory<OneSequenceGestureRecognizer>(
+                    () => EagerGestureRecognizer(),
+              ),
+            },
             mapToolbarEnabled: true,
             myLocationEnabled: true,
             myLocationButtonEnabled: true,
+            zoomControlsEnabled: false,
+            zoomGesturesEnabled: true,
             onTap: (LatLng position) {
               print(position);
               showDialog(context: context, builder: (context) {

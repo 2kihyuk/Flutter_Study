@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mapsnsproject/map/layout/sns_feed_screen.dart';
+import 'package:mapsnsproject/profile/view/sns_feed_screen.dart';
 
 import '../../common/layout/default_layout.dart';
 import '../../user/data/user_data.dart';

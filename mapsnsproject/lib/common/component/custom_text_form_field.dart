@@ -22,6 +22,7 @@ class CustomTextFormField extends StatelessWidget {
     );
 
     return TextFormField(
+
       cursorColor: PRIMARY_COLOR,
       //비밀번호 입력할때
       obscureText: obscureText,

@@ -69,7 +69,8 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                               print('선택된 장소: ${place.name}');
                               ref.read(pickPlaceProvider.notifier).state =
                                   place;
-                              _CheckFeedAlertDialog();
+                              // Future.delayed(Duration(seconds: 5));
+                              // _CheckFeedAlertDialog();
                               //여기에 이제 다이얼로그를 띄워서 해당 장소에 추억을 기록하겠냐고 물어봐야함.
                               //여기서 pickPlace를 인자로 넣어서 구글맵에 함수를 실행시켜야함.
                             },
@@ -91,7 +92,10 @@ class _MapScreenState extends ConsumerState<MapScreen> {
 
               ExpansionTile(
                 leading: Icon(Icons.map_sharp),
-                title: Text(isExpanded ? '지도 접기' : '지도 펼치기', style: TextStyle(fontSize: 16.0,fontWeight: FontWeight.w700),),
+                title: Text(
+                  isExpanded ? '지도 접기' : '지도 펼치기',
+                  style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w700),
+                ),
                 initiallyExpanded: isExpanded,
                 onExpansionChanged: (bool expanding) {
                   setState(() {
@@ -104,21 +108,20 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                     child: Consumer(
                       builder: (context, watch, child) {
                         final pickPlace = ref.watch(pickPlaceProvider);
-                        return GMap(pickPlace: pickPlace);
+                        return GMap(
+                          pickPlace: pickPlace,
+                          onCameraIdle: _CheckFeedAlertDialog, //onCameraIdle로 다이얼로그를 띄우는 함수를 GMap에 넘겨서 , GMap에서 CameraAnimate().then으로 카메라 이동이 끝나면, 해당 함수를 바로 실행할 수 있게 설정.
+                        );
                       },
                     ),
                   ),
                 ],
               ),
 
-              SizedBox(height: 20,),
+              SizedBox(height: 20),
 
               //방문했던 장소들을 요약해서 보여주고, places api ai를 활용하여, 요약?
               //방문했던 장소들을 모아둔 맵 리스트 하나 해두고, 해당 장소 리뷰 요약한거 받기.
-
-
-
-
             ],
           ),
         ),
