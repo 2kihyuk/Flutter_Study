@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mapsnsproject/profile/view/profile_edit_screen.dart';
 import 'package:mapsnsproject/profile/view/sns_feed_screen.dart';
 
 import '../../common/layout/default_layout.dart';
@@ -100,7 +101,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
               Colors.white,
             ), // 배경색 변경
           ),
-          onPressed: () {},
+          onPressed: () {
+            Navigator.of(context).push(MaterialPageRoute(builder: (_) => ProfileEditScreen()));
+          },
           child: Text('프로필 수정',style: TextStyle(color: Colors.black),),
         ),
       );

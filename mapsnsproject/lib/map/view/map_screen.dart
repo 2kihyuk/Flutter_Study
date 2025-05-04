@@ -118,6 +118,9 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                 ],
               ),
 
+              
+
+
               SizedBox(height: 20),
 
               //방문했던 장소들을 요약해서 보여주고, places api ai를 활용하여, 요약?
