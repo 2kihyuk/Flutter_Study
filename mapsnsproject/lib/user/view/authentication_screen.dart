@@ -104,12 +104,12 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
   }
 
   Future<void> _Auth() async {
-    final url = Uri.parse('https://api/auth/signup');
+    final url = Uri.parse('http://43.201.222.85:8080/api/auth/signup');
 
     final body = {
       'username': userName,
-      'userId': userId,
-      'phone': userNumber,
+      'loginId': userId,
+      'phoneNumber': userNumber,
       'password': password,
     };
 
@@ -119,6 +119,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode(body),
       );
+
       if (response.statusCode == 200 || response.statusCode == 201) {
         ScaffoldMessenger.of(
           context,

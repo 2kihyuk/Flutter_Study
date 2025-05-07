@@ -44,6 +44,7 @@ dependencies:
   aws_common: ^0.7.6
   amplify_auth_cognito: ^2.6.1
   readmore: ^3.0.0
+  flutter_secure_storage: ^5.0.2
 
 
 

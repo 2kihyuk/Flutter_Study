@@ -1,10 +1,11 @@
 import 'dart:convert';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:mapsnsproject/map/data/address_data.dart';
 import 'package:mapsnsproject/map/data/sns_post_data.dart';
-
+import 'package:mapsnsproject/user/data/user_token.dart';
 
 final pickPlaceProvider = StateProvider<Place>((ref) {
   return Place(
@@ -28,10 +29,16 @@ class MapRepositoryImpl implements MapRepository {
   @override
   Future<void> createPost(SnsPostModel model) async {
     try {
+      final storage = FlutterSecureStorage();
+      final Access_KEY = await storage.read(key: ACCESS_TOKEN_KEY);
       final response = await _http.post(
-        Uri.parse('https://api경로'),
-        body: model.toJson,
-        headers: {'Content-Type': 'application/json'},
+        Uri.parse('http://43.201.222.85:8080/api/markers'),
+        body: jsonEncode(model.toJson()),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization':
+              'Bearer $Access_KEY',
+        },
       );
       if (response.statusCode != 200) {
         print(
@@ -46,5 +53,5 @@ class MapRepositoryImpl implements MapRepository {
 }
 
 final mapRepositoryProvider = Provider<MapRepository>((ref) {
-    return MapRepositoryImpl(http.Client());
+  return MapRepositoryImpl(http.Client());
 });

@@ -1,6 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:http/http.dart' as http;
 import 'package:mapsnsproject/profile/view/profile_edit_screen.dart';
 import 'package:mapsnsproject/profile/view/sns_feed_screen.dart';
+import 'package:mapsnsproject/user/data/user_token.dart';
 
 import '../../common/layout/default_layout.dart';
 import '../../user/data/user_data.dart';
@@ -85,10 +90,36 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 },
               ),
             ),
+            ElevatedButton(onPressed: (){
+              _getData();
+            }, child: Text('게시물 불러오기'))
           ],
         ),
       ),
     );
+  }
+
+  Future<void> _getData() async {
+    final url = Uri.parse('http://43.201.222.85:8080/api/markers');
+    final storage = FlutterSecureStorage();
+    final token = await storage.read(key: ACCESS_TOKEN_KEY);
+    print(token);
+
+    try {
+      final response = await http.get(
+        url,
+        headers: {'Authorization': 'Bearer $token'},
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        print(response.body);
+      } else {
+        print('profile_screen - else Error - ${response.statusCode}');
+      }
+    } catch (e) {
+      print('profile_screen  - _getData() - try-catch Error ${e}');
+
+    }
   }
 
   Widget renderSizedBox() {

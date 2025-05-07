@@ -12,6 +12,7 @@ import 'package:mapsnsproject/map/layout/write_sns_screen.dart';
 import 'package:mapsnsproject/map/repository/map_repository.dart';
 import 'package:mapsnsproject/map/layout/g_map.dart';
 import 'package:mapsnsproject/map/repository/place_repository.dart';
+import 'package:mapsnsproject/user/data/user_token.dart';
 import '../../common/component/custom_text_form_field.dart';
 import '../../common/const/colors.dart';
 
@@ -27,6 +28,13 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   List<Place> places = []; // 검색된 결과들을 저장할 리스트
   // late Place pickPlace;
   bool isExpanded = true;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    print('ACCESS TOKEN KEY : $ACCESS_TOKEN_KEY');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -118,7 +126,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                 ],
               ),
 
-              
+
 
 
               SizedBox(height: 20),

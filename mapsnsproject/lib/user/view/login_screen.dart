@@ -20,40 +20,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   String password = '';
   bool _isLoading = false;
 
-  Future<void> _submit() async {
-    setState(() => _isLoading = true);
-    final loginReq = LoginRequest(userId: userId, password: password);
-
-    try {
-      final loginResp = await ref.read(loginProvider(loginReq).future);
-      // await _secureStorage.write(key:'accessToken', value:loginRes.accessToken);
-      // await _secureStorage.write(key:'refreshToken', value:loginRes.refreshToken);
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('로그인 성공!')));
-      Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (_) => RootTab()),
-        (Route<dynamic> route) => false,
-      );
-    } catch (e) {
-      showDialog(
-        context: context,
-        builder:
-            (_) => AlertDialog(
-              title: Text('로그인 실패'),
-              content: Text(e.toString()),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.of(context).pop(),
-                  child: Text('확인'),
-                ),
-              ],
-            ),
-      );
-    } finally {
-      setState(() => _isLoading = false);
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -88,9 +54,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     ? CircularProgressIndicator()
                     : ElevatedButton(
                       onPressed: () {
-                        // _submit();
+                        _submit();
                         //로그인 post. 로그인 성공하면 Root_Tab 이동 및 자동 로그인 유지하기.
-                        Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (_) => RootTab()), (Route<dynamic> route) => false );
+                        // Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (_) => RootTab()), (Route<dynamic> route) => false );
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: PRIMARY_COLOR,
@@ -113,6 +79,34 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       ),
       IsaddButton: false,
     );
+  }
+  Future<void> _submit() async {
+    if (userId.isEmpty || password.isEmpty) {
+      // 필요하다면 간단 검증도 추가
+      return;
+    }
+    setState(() => _isLoading = true);
+    try {
+      final resp = await ref.read(loginProvider(LoginRequest(loginId: userId, password: password)).future);
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('로그인 성공!')));
+      Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (_) => RootTab()),
+            (_) => false,
+      );
+    } catch (e) {
+      await showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+          title: Text('로그인 실패'),
+          content: Text(e.toString()),
+          actions: [
+            TextButton(onPressed: () => Navigator.of(context).pop(), child: Text('확인'))
+          ],
+        ),
+      );
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
   }
 }
 

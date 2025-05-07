@@ -189,7 +189,7 @@ class WriteSnsScreen extends ConsumerWidget {
                     ///model을 post 하는 방식으로..
                     ///repository에 post하는 코드를 작성해서 riverPod.
 
-                    // await ref.read(mapRepositoryProvider).createPost(model);
+                    await ref.read(mapRepositoryProvider).createPost(model);
 
                     await showDialog(
                       context: context,
@@ -242,14 +242,14 @@ class WriteSnsScreen extends ConsumerWidget {
   SnsPostModel _MakePlacePostModel(Place place, String content, String imgUrl) {
     SnsPostModel placeModel = SnsPostModel(
       placeName: place.name,
-      formatted_address: place.formatted_address,
+      formattedAddress: place.formatted_address,
       placeLat: place.geometry.location.lat,
       placeLng: place.geometry.location.lng,
       content: content,
-      ImgPath: imgUrl,
+      imgPath: imgUrl,
     );
     print(
-      'placeModel : ${placeModel.placeName} , ${placeModel.formatted_address} , ${placeModel.placeLat} / ${placeModel.placeLng} ,${placeModel.content} , ${placeModel.ImgPath}',
+      'placeModel : ${placeModel.placeName} , ${placeModel.formattedAddress} , ${placeModel.placeLat} / ${placeModel.placeLng} ,${placeModel.content} , ${placeModel.imgPath}',
     );
     return placeModel;
   }
@@ -265,11 +265,11 @@ class WriteSnsScreen extends ConsumerWidget {
       placeLat: position.latitude,
       placeLng: position.longitude,
       content: content,
-      ImgPath: imgUrl,
+      imgPath: imgUrl,
     );
 
     print(
-      'positionModel : ${positionModel.placeName} , ${positionModel.placeLat} / ${positionModel.placeLng} ,${positionModel.content} , ${positionModel.ImgPath}',
+      'positionModel : ${positionModel.placeName} , ${positionModel.placeLat} / ${positionModel.placeLng} ,${positionModel.content} , ${positionModel.imgPath}',
     );
     return positionModel;
   }

@@ -8,28 +8,28 @@ class SnsPostModel {
   final String placeName;
   final double placeLat;
   final double placeLng;
-  final String? formatted_address;
+  final String? formattedAddress;
   final String content;
-  final String ImgPath;
+  final String imgPath;
 
   SnsPostModel({
     required this.placeName,
     required this.placeLat,
     required this.placeLng,
-    this.formatted_address,
+    this.formattedAddress,
     required this.content,
-    required this.ImgPath,
+    required this.imgPath,
   });
 
   Map<String, dynamic> toJson() {
     return {
       'placeName': placeName,
-      if (formatted_address != null)
-        'formatted_address': formatted_address,
+      if (formattedAddress != null)
+        'formattedAddress': formattedAddress,
       'placeLat': placeLat,
       'placeLng': placeLng,
       'content': content,
-      'ImgPath': ImgPath,
+      'imgPath': imgPath,
     };
   }
 
@@ -40,7 +40,7 @@ class SnsPostModel {
       placeLat: json['placeLat'],
       placeLng: json['placeLng'],
       content: json['content'],
-      ImgPath: json['ImgPath'],
+      imgPath: json['imgPath'],
     );
   }
 
