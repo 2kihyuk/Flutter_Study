@@ -2,3 +2,5 @@
 const ACCESS_TOKEN_KEY = 'ACCESS_TOKEN';
 
 const REFRESH_TOKEN_KEY = 'REFRESH_TOKEN';
+
+const baseUrl = 'http://43.201.222.85:8080';

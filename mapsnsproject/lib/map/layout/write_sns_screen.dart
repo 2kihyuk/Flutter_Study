@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'dart:io' as io;
-
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:aws_common/vm.dart';
 import 'package:flutter/material.dart';
@@ -11,10 +10,10 @@ import 'package:image_picker/image_picker.dart';
 import 'package:mapsnsproject/common/component/custom_text_form_field.dart';
 import 'package:mapsnsproject/common/const/colors.dart';
 import 'package:mapsnsproject/common/layout/default_layout.dart';
-import 'package:mapsnsproject/map/data/sns_post_data.dart';
 import 'package:mapsnsproject/map/repository/map_repository.dart';
 import 'package:mapsnsproject/map/repository/place_repository.dart';
-import '../data/address_data.dart';
+import '../model/address_data.dart';
+import '../model/sns_post_data.dart';
 import '../repository/image_repository.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:amplify_storage_s3/amplify_storage_s3.dart';

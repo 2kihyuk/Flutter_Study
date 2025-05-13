@@ -3,8 +3,9 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:mapsnsproject/map/data/address_data.dart';
 import 'package:mapsnsproject/map/layout/write_sns_screen.dart';
+
+import '../model/address_data.dart';
 
 class GMap extends StatefulWidget {
   final Place pickPlace;

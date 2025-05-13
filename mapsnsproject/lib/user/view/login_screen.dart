@@ -88,7 +88,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     setState(() => _isLoading = true);
     try {
       final resp = await ref.read(loginProvider(LoginRequest(loginId: userId, password: password)).future);
+
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('로그인 성공!')));
+
       Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(builder: (_) => RootTab()),
             (_) => false,

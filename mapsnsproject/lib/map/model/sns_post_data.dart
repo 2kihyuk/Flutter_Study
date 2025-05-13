@@ -5,6 +5,8 @@ import 'package:aws_common/vm.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class SnsPostModel {
+  final int? userId;
+  final int? markerId;
   final String placeName;
   final double placeLat;
   final double placeLng;
@@ -13,6 +15,8 @@ class SnsPostModel {
   final String imgPath;
 
   SnsPostModel({
+    this.userId,
+    this.markerId,
     required this.placeName,
     required this.placeLat,
     required this.placeLng,
@@ -36,6 +40,8 @@ class SnsPostModel {
   //서버에서 sns게시물 데이터 받아와서 매핑할때 쓸 fromJson.
   factory SnsPostModel.fromJson(Map<String, dynamic> json) {
     return SnsPostModel(
+      markerId: json['markerId'] as int?,
+      userId: json['userId'] as int?,
       placeName: json['placeName'],
       placeLat: json['placeLat'],
       placeLng: json['placeLng'],

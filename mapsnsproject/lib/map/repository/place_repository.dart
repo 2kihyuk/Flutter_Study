@@ -3,8 +3,9 @@ import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 
-import '../data/address_data.dart';
-import '../data/map_data.dart';
+import '../model/address_data.dart';
+import '../model/map_data.dart';
+
 
 final searchQueryProvider = StateProvider<String>((ref) => '');
 
@@ -33,7 +34,8 @@ final placesProvider = FutureProvider<List<Place>?>((ref) async {
   }
 });
 
-
-
 final positionPlaceNameProvider = StateProvider<String>((ref) => '');
+
+
+
 

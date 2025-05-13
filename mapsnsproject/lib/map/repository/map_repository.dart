@@ -3,9 +3,10 @@ import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
-import 'package:mapsnsproject/map/data/address_data.dart';
-import 'package:mapsnsproject/map/data/sns_post_data.dart';
 import 'package:mapsnsproject/user/data/user_token.dart';
+
+import '../model/address_data.dart';
+import '../model/sns_post_data.dart';
 
 final pickPlaceProvider = StateProvider<Place>((ref) {
   return Place(
