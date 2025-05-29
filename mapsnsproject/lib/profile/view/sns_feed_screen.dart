@@ -28,11 +28,24 @@ class _SnsFeedScreenState extends ConsumerState<SnsFeedScreen> {
   TextEditingController commentController = TextEditingController();
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    print('받은 markerId: ${widget.markerId}');
+
+  }
+  @override
   Widget build(BuildContext context) {
+
     final postAsync = ref.watch(postByIdProvider(widget.markerId));
 
+
+    ///댓글 post,get 하는 로직.
+    ///post -> onPressed() -> 댓글내용, 어떤 게시물인지, 댓글 다는 사람 ID. post.
+    ///get -> provider로 감싸서 게시물 들어오면 get(body: 어떤 게시물인지). -> 댓글 단 사람 ID, 댓글내용,
+
     final dummyComments = List.generate(
-      10,
+      3,
       (i) => {
         'user': 'user$i',
         'text': '댓글 내용 #$i: 길어지면…더보기 기능을 씁니다더보기 기능을 씁니다더보기 기능을 씁니다.',
@@ -84,7 +97,7 @@ class _SnsFeedScreenState extends ConsumerState<SnsFeedScreen> {
                           ),
                           SizedBox(height: 2),
                           Text(
-                            '장소명',
+                            '${postAsync.value?.placeName}',
                             style: TextStyle(
                               color: Colors.grey.shade600,
                               fontSize: 14,
@@ -126,7 +139,7 @@ class _SnsFeedScreenState extends ConsumerState<SnsFeedScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              '사용자 아이디',
+                              '${posts.userId}',
                               style: TextStyle(fontWeight: FontWeight.bold),
                             ),
                             SizedBox(width: 10),
@@ -237,7 +250,7 @@ class _SnsFeedScreenState extends ConsumerState<SnsFeedScreen> {
               postAsync.when(
                 data: (posts) {
                   return ExpansionTile(
-                    title: Text('장소 정보'),
+                    title: Text('지명 : ${posts.placeName}'),
                     // 1) 타이틀(헤더) 영역의 좌우 패딩을 0으로
                     tilePadding: EdgeInsets.zero,
                     // 2) 열렸을 때 자식들이 차지하는 영역 전체의 패딩을 0으로

@@ -11,14 +11,22 @@ class User{
   final String user_ID;
   final String? user_PW;
   final String user_Number;
-  final bool isUserIsMe; //사용자가 나 자신인지, 다른 사용자인지?
+ //사용자가 나 자신인지, 다른 사용자인지?
 
   User({
     required this.user_Name,
     required this.user_ID,
     this.user_PW,
     required this.user_Number,
-    required this.isUserIsMe
+
   });
 
+  factory User.fromJson(Map<String,dynamic> json){
+    return User(user_Name: json['username'] as String,
+      user_ID: json['loginId'] as String,
+      user_Number: json['phoneNumber'] as String,);
+  }
+
+
 }
+

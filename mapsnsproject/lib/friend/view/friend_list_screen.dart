@@ -104,12 +104,7 @@ class _FriendListScreenState extends State<FriendListScreen> {
                     MaterialPageRoute(
                       builder:
                           (_) => ProfileScreen(
-                            user: User(
-                              user_Name: name,
-                              user_ID: Id,
-                              user_Number: number,
-                              isUserIsMe: false,
-                            ),
+
                           ),
                     ),
                   );

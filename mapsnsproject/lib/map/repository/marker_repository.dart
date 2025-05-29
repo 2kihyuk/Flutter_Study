@@ -25,7 +25,7 @@ class MarkerRepositoryImpl implements MarkerRepository {
   Future<List<SnsPostModel>> fetchAll() async {
     final token = await _storage.read(key: ACCESS_TOKEN_KEY);
     final resp = await _client.get(
-      Uri.parse('$_baseUrl/api/markers'),
+      Uri.parse('$_baseUrl/api/markers/me'),
       headers: {
         'Content-Type': 'application/json; charset=utf-8',
         'Authorization': 'Bearer $token',
@@ -43,18 +43,24 @@ class MarkerRepositoryImpl implements MarkerRepository {
 
   @override
   Future<SnsPostModel> fetchById(int markerId) async {
+
     final token = await _storage.read(key: ACCESS_TOKEN_KEY);
     final resp = await _client.get(
-      (Uri.parse('$_baseUrl/api/markers/markerId')),
+      (Uri.parse('$_baseUrl/api/markers/$markerId')),
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
       },
     );
-    if(resp.statusCode == 200){
+    print('API 호출 URL: $_baseUrl/api/markers/$markerId');
+    print('응답 상태코드: ${resp.statusCode}');
+    print('응답 본문: ${resp.body}');
+
+    if (resp.statusCode == 200) {
       final Map<String, dynamic> json = jsonDecode(resp.body);
       return SnsPostModel.fromJson(json);
-    }else {
+    } else {
+
       throw Exception('Failed to load marker $markerId');
     }
   }
@@ -73,7 +79,11 @@ final markersProvider = FutureProvider<List<SnsPostModel>>((ref) {
 
 /// 5)markerId를 통해서 특정 게시물에 대한 데이터 불러오기
 ///
-    final postByIdProvider = FutureProvider.family<SnsPostModel,int>((ref,markerId){
-      final repo = ref.read(markerRepositoryProvider);
-      return repo.fetchById(markerId);
-    });
+final postByIdProvider = FutureProvider.family<SnsPostModel, int>((
+  ref,
+  markerId,
+) {
+  print('Provider 호출됨: markerId = $markerId');
+  final repo = ref.read(markerRepositoryProvider);
+  return repo.fetchById(markerId);
+});
